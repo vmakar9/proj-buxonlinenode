@@ -210,9 +210,9 @@ eastern_european_langs = {
 }
 
 
-def write_data_to_json(data: (list, dict), filename: str):
+def write_data_to_json(data: (list, dict), filename: str, mode: str = 'w'):
     json_obj = json.dumps(data, indent=4)
-    with open(filename, 'w') as outfile:
+    with open(filename, mode) as outfile:
         outfile.write(json_obj)
         print(f'{len(data)} elements wrote to {filename}')
 

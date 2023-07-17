@@ -31,22 +31,19 @@ if __name__ == '__main__':
     print(langs)
     result = {}
     for title in titles:
+        lang = 'English'
         lang_result = {}
-        for lang in langs:
-            t2_start = time.perf_counter()
-            print(f'> processing [{title}] on [{lang}]')
-            prompt = get_vacancy_creation_prompt(title=title, language=lang)
-            vacancy_ad_text = generate_ai_answer(api_key=AZURE_OPENAI_API_KEY, prompt=prompt)
-            lang_result[lang] = vacancy_ad_text
-            t2_stop = time.perf_counter()
-            print("> lang done in", t2_stop - t2_start)
-            if lang == 'Azerbaijani':
-                break
+        t2_start = time.perf_counter()
+        prompt = get_vacancy_creation_prompt(title=title, language=lang)
+        vacancy_ad_text = generate_ai_answer(api_key=AZURE_OPENAI_API_KEY, prompt=prompt)
+        lang_result[lang] = vacancy_ad_text
+        t2_stop = time.perf_counter()
+        print("> Title done in:", round(t2_stop - t2_start, 0), 'sec.')
         result[title] = lang_result
         if title == 'Moment.js Developers':
             break
-        write_data_to_json(result, 'temp_result.json')
+    write_data_to_json(result, 'temp_result.json', mode='w')
     t1_stop = time.perf_counter()
-    print("Done in:", t1_stop - t1_start)
+    print("Done in:", round(t1_stop - t1_start, 0), 'sec.')
 
 

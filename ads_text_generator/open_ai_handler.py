@@ -234,11 +234,7 @@ shell_script_ua_vacancy_answer = """
 def get_vacancy_creation_prompt(title: str, language: str):
     vacancy_prompt = [
         {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "How many Eastern European languages do you know?"},
-        {"role": "assistant", "content": languages_list_answer},
-        {"role": "user", "content": "Do you know Danish, Catalan, Swedish or Georgian languages?"},
-        {"role": "assistant", "content": other_langs_answer},
-        {"role": "user", "content": "Can you generate typical DevOps vacancy in Danish language?"},
+        {"role": "user", "content": "Can you generate typical DevOps vacancy in English language?"},
         {"role": "assistant", "content": typical_devops_vacancy_answer},
         {"role": "user", "content": 'You provided unnecessary email "careers@virksomhed.dk". '
                                     'Please avoid to use any contacts or emails.'},
@@ -247,12 +243,9 @@ def get_vacancy_creation_prompt(title: str, language: str):
                                     "created ad for the presence of trademarks and only then replace them with "
                                     "transliteration in the language of the vacancy."},
         {"role": "assistant", "content": trademark_devops_vacancy_answer},
-        {"role": "user", "content": 'Now generate me a text for a vacancy for "Shell Script Developers" in "Ukrainian" '
-                                    'language with the rules set earlier. Output data as plain text in html format to '
-                                    'be pasted into an existing page. Do not explain, do not comment.'},
-        {"role": "assistant", "content": shell_script_ua_vacancy_answer},
-        {"role": "user", "content": f'Good! Now generate me a text for a vacancy "{title}" in "{language}" '
-                                    f'language with the rules set earlier.'},
+        {"role": "user", "content": f'Now generate me a text for a vacancy for "{title}" in "{language}" '
+                                    f'language with the rules set earlier. Output data as plain text in html format to '
+                                    f'be pasted into an existing page. Do not explain, do not comment.'},
     ]
     return vacancy_prompt
 

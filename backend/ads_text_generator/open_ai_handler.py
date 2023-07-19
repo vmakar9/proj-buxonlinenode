@@ -1,5 +1,6 @@
 import time
 import openai
+import json
 
 languages_list_answer = """
 As an AI language model, I have been trained on a vast amount of data, including texts from various sources. I have 
@@ -250,16 +251,146 @@ def get_vacancy_creation_prompt(title: str, language: str):
     return vacancy_prompt
 
 
-def clean_ai_answer(raw_data: str) -> str:
-    start_index = raw_data.find('<')
+taxonomies_lvl2_answer = """
+Sure, here is a JSON list of a taxonomy for a Web Developer/Web Programmer/Web Designer. It includes computer 
+languages, tools, frameworks, and more. Please note that this list is not exhaustive and the field of web development 
+is constantly evolving with new tools and technologies.
+[
+    {"category": "Languages", "items": ["HTML", "CSS", "JavaScript", "Python", "Ruby", "PHP", "Java", "C#", "TypeScript", "SQL", "Swift", "Kotlin", "Go", "Rust", "Perl"]},
+    {"category": "Frontend Frameworks", "items": ["React", "Vue.js", "Angular", "Ember.js", "Svelte", "Meteor.js", "Aurelia", "Backbone.js"]},
+    {"category": "Backend Frameworks", "items": ["Express.js", "Django", "Flask", "Ruby on Rails", "Laravel", "Spring", "ASP.NET", "Phoenix", "Struts"]},
+    {"category": "Full Stack Frameworks", "items": ["MEAN", "MERN", "Django + React", "Ruby on Rails + Vue.js", "Spring + Angular", "Laravel + Vue.js"]},
+    {"category": "Libraries", "items": ["jQuery", "Lodash", "Moment.js", "RxJS", "Three.js", "D3.js", "TensorFlow.js", "P5.js"]},
+    {"category": "Databases", "items": ["MySQL", "PostgreSQL", "MongoDB", "SQLite", "MariaDB", "Cassandra", "Redis", "Elasticsearch", "Firebase"]},
+    {"category": "ORMs", "items": ["Sequelize", "Mongoose", "Hibernate", "Active Record", "TypeORM", "SQLAlchemy"]},
+    {"category": "Testing Tools", "items": ["Jest", "Mocha", "Jasmine", "Cypress", "Selenium", "Puppeteer", "Chai", "Enzyme", "Protractor"]},
+    {"category": "Build Tools", "items": ["Webpack", "Gulp", "Grunt", "Parcel", "Rollup", "Browserify"]},
+    {"category": "Package Managers", "items": ["npm", "Yarn", "pip", "RubyGems", "Composer", "Maven", "NuGet"]},
+    {"category": "Version Control Systems", "items": ["Git", "Mercurial", "Subversion", "Perforce"]},
+    {"category": "Cloud Platforms", "items": ["AWS", "Google Cloud", "Azure", "Heroku", "DigitalOcean", "Vercel", "Netlify"]},
+    {"category": "Containerization Tools", "items": ["Docker", "Kubernetes", "OpenShift", "Rancher"]},
+    {"category": "CI/CD Tools", "items": ["Jenkins", "Travis CI", "CircleCI", "GitLab CI/CD", "GitHub Actions", "Azure DevOps"]},
+    {"category": "Web Servers", "items": ["Apache", "Nginx", "Microsoft IIS", "LiteSpeed", "Tomcat", "Caddy"]},
+    {"category": "API Tools", "items": ["Postman", "Swagger", "GraphQL", "gRPC", "REST", "JSON:API"]},
+    {"category": "CSS Frameworks", "items": ["Bootstrap", "Tailwind CSS", "Foundation", "Bulma", "Semantic UI", "Material-UI", "Ant Design"]},
+    {"category": "CSS Preprocessors", "items": ["Sass", "Less", "Stylus", "PostCSS"]},
+    {"category": "CSS Architecture", "items": ["BEM", "OOCSS", "SMACSS", "ITCSS", "Atomic CSS"]},
+    {"category": "CSS-in-JS", "items": ["Styled Components", "Emotion", "JSS", "Radium", "Glamorous"]},
+    {"category": "Static Site Generators", "items": ["Jekyll", "Hugo", "Gatsby", "Next.js", "Nuxt.js", "Eleventy", "Hexo"]},
+    {"category": "Headless CMS", "items": ["Strapi", "Ghost", "Netlify CMS", "Contentful", "Sanity", "Prismic"]},
+    {"category": "Authentication", "items": ["OAuth", "JWT", "OpenID Connect", "SAML", "LDAP"]},
+    {"category": "Web Security", "items": ["CORS", "Content Security Policy", "OWASP Top 10", "SSL/TLS", "HTTP Strict Transport Security"]},
+    {"category": "Web Performance", "items": ["Lazy Loading", "Compression", "Caching", "CDN", "Minification", "HTTP/2", "Web Workers"]},
+    {"category": "Web Accessibility", "items": ["ARIA", "WCAG", "Semantic HTML", "Keyboard Accessibility"]},
+    {"category": "Web APIs", "items": ["DOM", "Fetch API", "Canvas API", "Web Audio API", "Web Storage API", "Service Workers"]},
+    {"category": "Web Sockets", "items": ["Socket.IO", "WebSocket API", "SignalR", "Pusher"]},
+    {"category": "WebRTC", "items": ["PeerJS", "SimplePeer", "Jitsi", "Janus"]},
+    {"category": "Serverless", "items": ["AWS Lambda", "Google Cloud Functions", "Azure Functions", "Vercel Serverless Functions", "Netlify Functions"]},
+    {"category": "Microservices", "items": ["gRPC", "RabbitMQ", "Kafka", "NATS", "Istio", "Linkerd"]},
+    {"category": "GraphQL Tools", "items": ["Apollo", "Relay", "Prisma", "Hasura", "GraphCMS"]},
+    {"category": "State Management", "items": ["Redux", "MobX", "Vuex", "Context API", "Zustand", "XState"]},
+    {"category": "Type Checkers", "items": ["TypeScript", "Flow", "Prop Types"]},
+    {"category": "IDEs", "items": ["VS Code", "Sublime Text", "Atom", "WebStorm", "Vim", "Emacs"]},
+    {"category": "Text Editors", "items": ["Notepad++", "Brackets", "TextMate", "BBEdit"]},
+    {"category": "Command Line Tools", "items": ["Bash", "Zsh", "Fish", "PowerShell", "tmux", "GNU Screen"]},
+    {"category": "Virtualization", "items": ["VMware", "VirtualBox", "Hyper-V", "Parallels Desktop"]},
+    {"category": "Operating Systems", "items": ["Linux", "Windows", "macOS", "BSD", "Solaris"]},
+    {"category": "Web Browsers", "items": ["Chrome", "Firefox", "Safari", "Edge", "Opera", "Brave"]},
+    {"category": "Browser Developer Tools", "items": ["Chrome DevTools", "Firefox Developer Tools", "Safari Web Inspector", "Edge Developer Tools"]},
+    {"category": "Web Standards", "items": ["W3C", "WHATWG", "ECMA", "IETF", "ISO"]},
+    {"category": "Web Protocols", "items": ["HTTP", "HTTPS", "FTP", "SFTP", "SMTP", "IMAP", "POP3", "DNS", "TCP/IP"]},
+    {"category": "Data Formats", "items": ["JSON", "XML", "YAML", "CSV", "HTML", "Markdown"]},
+    {"category": "Data Visualization", "items": ["D3.js", "Chart.js", "Highcharts", "Google Charts", "Leaflet", "Three.js"]},
+    {"category": "Machine Learning", "items": ["TensorFlow.js", "Brain.js", "Keras.js", "Synaptic.js", "ConvNetJS"]},
+    {"category": "Web Assembly", "items": ["Emscripten", "Blazor", "AssemblyScript", "Rust and WebAssembly"]},
+    {"category": "Progressive Web Apps", "items": ["Service Workers", "Web App Manifest", "Lighthouse", "Workbox"]},
+    {"category": "Mobile Web", "items": ["Responsive Design", "Mobile First", "AMP", "PWA"]},
+    {"category": "SEO", "items": ["Meta Tags", "Sitemaps", "Robots.txt", "Structured Data", "Google Search Console", "Bing Webmaster Tools"]},
+    {"category": "Analytics", "items": ["Google Analytics", "Matomo", "Plausible", "Fathom", "Simple Analytics"]},
+    {"category": "Email Services", "items": ["SendGrid", "Mailgun", "Postmark", "SES", "Mailchimp"]},
+    {"category": "Payment Gateways", "items": ["Stripe", "PayPal", "Square", "Braintree", "Authorize.Net"]},
+    {"category": "E-commerce", "items": ["Shopify", "BigCommerce", "Magento", "WooCommerce", "PrestaShop"]},
+    {"category": "CMS", "items": ["WordPress", "Drupal", "Joomla", "Squarespace", "Wix"]},
+    {"category": "Learning Platforms", "items": ["Coursera", "Udemy", "edX", "Khan Academy", "Codecademy"]},
+    {"category": "Blogging Platforms", "items": ["WordPress", "Ghost", "Medium", "Blogger", "Tumblr"]},
+    {"category": "Social Media", "items": ["Facebook", "Twitter", "Instagram", "LinkedIn", "Pinterest"]},
+    {"category": "Video Hosting", "items": ["YouTube", "Vimeo", "Dailymotion", "Twitch", "Facebook Watch"]},
+    {"category": "Image Hosting", "items": ["Imgur", "Flickr", "500px", "SmugMug", "Photobucket"]},
+    {"category": "File Hosting", "items": ["Dropbox", "Google Drive", "OneDrive", "Box", "iCloud"]},
+    {"category": "Project Management", "items": ["Trello", "Asana", "Jira", "Basecamp", "Monday.com"]},
+    {"category": "Communication", "items": ["Slack", "Microsoft Teams", "Discord", "Zoom", "Google Meet"]},
+    {"category": "Documentation", "items": ["Confluence", "Notion", "Google Docs", "Quip", "Slite"]},
+    {"category": "Design", "items": ["Sketch", "Figma", "Adobe XD", "InVision", "Marvel"]},
+    {"category": "Prototyping", "items": ["Framer", "Proto.io", "Origami Studio", "Axure RP", "Balsamiq"]},
+    {"category": "Version Control Hosting", "items": ["GitHub", "GitLab", "Bitbucket", "SourceForge", "AWS CodeCommit"]},
+    {"category": "APIs", "items": ["REST", "GraphQL", "gRPC", "SOAP", "JSON-RPC"]},
+    {"category": "Web Scraping", "items": ["Beautiful Soup", "Scrapy", "Puppeteer", "Selenium", "Cheerio"]},
+    {"category": "Web Automation", "items": ["Zapier", "IFTTT", "Integromat", "Automate.io", "Microsoft Power Automate"]},
+    {"category": "Web Hosting", "items": ["Bluehost", "HostGator", "GoDaddy", "SiteGround", "A2 Hosting"]},
+    {"category": "Domain Registrars", "items": ["Namecheap", "GoDaddy", "Google Domains", "Hover", "Dynadot"]},
+    {"category": "VPN", "items": ["NordVPN", "ExpressVPN", "CyberGhost", "Surfshark", "Private Internet Access"]},
+    {"category": "Password Managers", "items": ["LastPass", "1Password", "Dashlane", "Bitwarden", "Keeper"]},
+    {"category": "Online Learning", "items": ["Coursera", "Udemy", "edX", "Khan Academy", "Codecademy"]},
+    {"category": "Blogging Platforms", "items": ["WordPress", "Ghost", "Medium", "Blogger", "Tumblr"]},
+    {"category": "Social Media", "items": ["Facebook", "Twitter", "Instagram", "LinkedIn", "Pinterest"]},
+    {"category": "Video Hosting", "items": ["YouTube", "Vimeo", "Dailymotion", "Twitch", "Facebook Watch"]},
+    {"category": "Image Hosting", "items": ["Imgur", "Flickr", "500px", "SmugMug", "Photobucket"]},
+    {"category": "File Hosting", "items": ["Dropbox", "Google Drive", "OneDrive", "Box", "iCloud"]},
+    {"category": "Project Management", "items": ["Trello", "Asana", "Jira", "Basecamp", "Monday.com"]},
+    {"category": "Communication", "items": ["Slack", "Microsoft Teams", "Discord", "Zoom", "Google Meet"]},
+    {"category": "Documentation", "items": ["Confluence", "Notion", "Google Docs", "Quip", "Slite"]},
+    {"category": "Design", "items": ["Sketch", "Figma", "Adobe XD", "InVision", "Marvel"]},
+    {"category": "Prototyping", "items": ["Framer", "Proto.io", "Origami Studio", "Axure RP", "Balsamiq"]},
+    {"category": "Version Control Hosting", "items": ["GitHub", "GitLab", "Bitbucket", "SourceForge", "AWS CodeCommit"]},
+    {"category": "APIs", "items": ["REST", "GraphQL", "gRPC", "SOAP", "JSON-RPC"]},
+    {"category": "Web Scraping", "items": ["Beautiful Soup", "Scrapy", "Puppeteer", "Selenium", "Cheerio"]},
+    {"category": "Web Automation", "items": ["Zapier", "IFTTT", "Integromat", "Automate.io", "Microsoft Power Automate"]},
+    {"category": "Web Hosting", "items": ["Bluehost", "HostGator", "GoDaddy", "SiteGround", "A2 Hosting"]},
+    {"category": "Domain Registrars", "items": ["Namecheap", "GoDaddy", "Google Domains", "Hover", "Dynadot"]},
+    {"category": "VPN", "items": ["NordVPN", "ExpressVPN", "CyberGhost", "Surfshark", "Private Internet Access"]},
+    {"category": "Password Managers", "items": ["LastPass", "1Password", "Dashlane", "Bitwarden", "Keeper"]}
+]
+"""
+
+
+def get_taxonomy_creation_prompt(title: str):
+    vacancy_prompt = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Please build me a taxonomy for  Web Developer/Web Programmer/Web Designer. "
+                                    "This taxonomy should include famous computer languages, tools, frameworks, etc. "
+                                    "This taxonomy must be not included brand names such as Adobe, Wordpress, etc. "
+                                    "The size of this taxonomy should be 100 bullets. Output format is json. "
+                                    "Dont comment at begin or end of json list. Please generate only json list."},
+        {"role": "assistant", "content": taxonomies_lvl2_answer},
+        {"role": "user", "content": f'Good! Now please repeat for {title}'},
+    ]
+    return vacancy_prompt
+
+
+def clean_ai_answer(raw_data: str, expected_data_type: str):
+    if expected_data_type == 'html':
+        start_symbol = '<'
+        end_symbol = '>'
+    elif expected_data_type == 'json':
+        start_symbol = '['
+        end_symbol = ']'
+    else:
+        raise ValueError('> expected_data_type must be html or json')
+    start_index = raw_data.find(start_symbol)
     if start_index != -1:
-        end_index = raw_data.rfind('>') + 1
-        return raw_data[start_index:end_index]
-    print(f'>>> html answer not found: {raw_data[:200]}')
+        end_index = raw_data.rfind(end_symbol) + 1
+        data = raw_data[start_index:end_index]
+        if expected_data_type == 'html':
+            return data
+        try:
+            return json.loads(data)
+        except Exception as ex:
+            print('>> clean_ai_answer error:', str(ex))
+    print(f'>>> answer not found: {raw_data[:400]}')
     return ''
 
 
-def generate_ai_answer(prompt, api_key: str) -> str:
+def generate_ai_answer(prompt, api_key: str, expected_data_type: str = 'html', print_raw_answer: bool = False):
     openai.api_type = "azure"
     openai.api_base = 'https://chat-gpt-4-usa.openai.azure.com/'
     openai.api_version = '2023-05-15'
@@ -271,7 +402,9 @@ def generate_ai_answer(prompt, api_key: str) -> str:
             if i > 1:
                 print('> try #', i, 'waiting delay')
                 time.sleep(7)
-            answer = clean_ai_answer(raw_answer['choices'][0]['message']['content'])
+                if print_raw_answer:
+                    pprint(raw_answer['choices'][0]['message']['content'])
+            answer = clean_ai_answer(raw_answer['choices'][0]['message']['content'], expected_data_type)
             if answer:
                 return answer
             print(f">>> cant clean answer: {raw_answer['choices'][0]['message']['content'][:150]}")
@@ -287,7 +420,15 @@ if __name__ == '__main__':
     from pprint import pprint
     load_dotenv()
     AZURE_OPENAI_API_KEY = os.environ.get('AZURE_OPENAI_API_KEY')
-    prompt = get_vacancy_creation_prompt('AWS Developer', 'Russian')
-    ai_answer = generate_ai_answer(prompt, AZURE_OPENAI_API_KEY)
-    pprint(ai_answer)
+    # prompt = get_vacancy_creation_prompt('AWS Developer', 'Russian')
+    # prompt = [
+    #     {"role": "system", "content": "You are a helpful assistant."},
+    #     {"role": "user", "content": "Please build me a taxonomy for  Web Developer/Web Programmer/Web Designer. "
+    #                                 "This taxonomy should include famous computer languages, tools, frameworks, etc. "
+    #                                 "This taxonomy must be not included brand names such as Adobe, Wordpress, etc. "
+    #                                 "The size of this taxonomy should be 100 bullets. Output format is json. "
+    #                                 "Please generate only json list."},
+    #     ]
+    # ai_answer = generate_ai_answer(prompt, AZURE_OPENAI_API_KEY, print_raw_answer=True, expected_data_type='json')
+    # pprint(ai_answer)
 

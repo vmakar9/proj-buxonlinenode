@@ -1,6 +1,5 @@
 import os
 import json
-from open_ai_handler import generate_ai_answer
 from dotenv import load_dotenv
 
 eastern_european_countries = [

@@ -1,6 +1,7 @@
 import time
 import openai
 import json
+from pprint import pprint
 
 languages_list_answer = """
 As an AI language model, I have been trained on a vast amount of data, including texts from various sources. I have 
@@ -367,6 +368,25 @@ def get_taxonomy_creation_prompt(title: str):
     return vacancy_prompt
 
 
+def get_vacancy_creation_with_taxonomy_prompt(taxonomy1=str, taxonomies2=str) -> list:
+    vacancy_prompt = [
+        {"role": "user", "content": f"Act as a Human Resources representative posting a job listing. Please provide a "
+                                    f"detailed and engaging job vacancy announcement for a '{taxonomy1}' position "
+                                    f"and focus on these taxonomies: '{taxonomies2}'."
+                                    f"The position should be remote only and emphasize flexibility and a friendly work "
+                                    f"environment. Also, make sure not to include any specific company information, "
+                                    f"but do provide an "
+                                    f"overview of the responsibilities, qualifications, and benefits associated with "
+                                    f"this position. Don't write 'How to Apply' section. Don't write 'Employer' "
+                                    f"section. Don't use emoji."
+                                    f"Please, output data as plain text in html format to be pasted into an existing"
+                                    f"page (I need only body content)."},
+        # {"role": "assistant", "content": taxonomies_lvl2_answer},
+        # {"role": "user", "content": f'Good! Now please repeat for {title}'},
+    ]
+    return vacancy_prompt
+
+
 def clean_ai_answer(raw_data: str, expected_data_type: str):
     if expected_data_type == 'html':
         start_symbol = '<'
@@ -375,7 +395,7 @@ def clean_ai_answer(raw_data: str, expected_data_type: str):
         start_symbol = '['
         end_symbol = ']'
     else:
-        raise ValueError('> expected_data_type must be html or json')
+        return raw_data
     start_index = raw_data.find(start_symbol)
     if start_index != -1:
         end_index = raw_data.rfind(end_symbol) + 1

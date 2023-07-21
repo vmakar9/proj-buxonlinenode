@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils.text import slugify
+from uuid import uuid4
 
 
 class FirstLevelTaxonomy(models.Model):
@@ -24,6 +26,9 @@ class SecondLevelTaxonomy(models.Model):
 
     def __str__(self):
         return f'{self.taxonomy.role} >>> {self.category}'
+
+    def get_category_items_prompt(self):
+        return {'category': self.category, 'items': [i.name for i in self.items.all()]}
 
 
 class TechnologyItem(models.Model):
@@ -63,7 +68,25 @@ class Language(models.Model):
 
 
 class Vacancy(models.Model):
-    pass
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    taxonomy = models.ForeignKey(FirstLevelTaxonomy, on_delete=models.CASCADE)
+    url = models.SlugField(max_length=310, blank=True, unique=True, editable=False)
+    title = models.CharField(max_length=300)
+    text = models.TextField()
+    text_html = models.TextField(blank=True)
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
+
+    class Meta:
+        verbose_name = 'Vacancy'
+        verbose_name_plural = 'Vacancies'
+
+    def __str__(self):
+        return f'{self.title} [{self.url}]'
+
+    def save(self, *args, **kwargs):
+        if not self.url:
+            self.url = f"{slugify(self.taxonomy.role)}-{str(uuid4())[:6]}"
+        super(Vacancy, self).save(*args, **kwargs)
 
 
 class SEOPage(models.Model):
@@ -73,7 +96,4 @@ class SEOPage(models.Model):
 class KeyWord(models.Model):
     pass
 
-
-class EEULang(models.Model):
-    pass
 

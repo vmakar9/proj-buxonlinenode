@@ -1,12 +1,18 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'mc)zt@pv_w*ovE9flf#+t638(!y&u&6)4&3^pz#h8y%m&h#')
 DEBUG = bool(int(os.environ.get('DEBUG', True)))
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1 localhost .ngrok.io').split(' ')
+CSRF_TRUSTED_ORIGINS = ['http://api-dev.buxonline.org', 'https://api-dev.buxonline.org', 'https://api.buxonline.org']
+SITE_URL = 'https://api-dev.buxonline.org'
 
-ALLOWED_HOSTS = []
+# if DEBUG:
+#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#     load_dotenv()  # ToDo
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -16,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
@@ -27,11 +34,20 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# CORS_ALLOW_ALL_ORIGINS = True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    'http://api-dev.buxonline.org', 'https://api-dev.buxonline.org', 'https://api.buxonline.org',
+    'http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001',
+    'http://20.232.116.40',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -64,13 +80,6 @@ DATABASES = {
 }
 if DATABASES.get('default').get('ENGINE') != 'django.db.backends.sqlite3':
     DATABASES.get('default').update({'OPTIONS': {'sslmode': 'require'}})
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 LANGUAGE_CODE = 'en-us'  # 'uk'
 TIME_ZONE = 'Europe/Kiev'

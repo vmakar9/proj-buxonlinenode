@@ -7,12 +7,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'mc)zt@pv_w*ovE9flf#+t638(!y&u&6)4&3^pz#h8y%m&h#')
 DEBUG = bool(int(os.environ.get('DEBUG', True)))
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1 localhost .ngrok.io').split(' ')
-CSRF_TRUSTED_ORIGINS = ['http://api-dev.buxonline.org', 'https://api-dev.buxonline.org', 'https://api.buxonline.org']
+CSRF_TRUSTED_ORIGINS = ['http://api-dev.buxonline.org', 'https://api-dev.buxonline.org']
 SITE_URL = 'https://api-dev.buxonline.org'
 
-# if DEBUG:
-#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-#     load_dotenv()  # ToDo
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    load_dotenv()
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -45,9 +45,8 @@ MIDDLEWARE = [
 # CORS_ALLOW_ALL_ORIGINS = True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    'http://api-dev.buxonline.org', 'https://api-dev.buxonline.org', 'https://api.buxonline.org',
+    'http://api-dev.buxonline.org', 'https://api-dev.buxonline.org', 'http://20.232.116.40',
     'http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001',
-    'http://20.232.116.40',
 ]
 
 ROOT_URLCONF = 'config.urls'

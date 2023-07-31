@@ -67,9 +67,23 @@ class Language(models.Model):
         verbose_name_plural = 'Languages'
 
 
+class VacancyMetaTranslated(models.Model):
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    more = models.CharField(max_length=512)
+    apply_for_job = models.CharField(max_length=512)
+
+    def __str__(self):
+        return f'{self.language} -> {self.more}'
+
+    class Meta:
+        verbose_name = 'Vacancy Meta Translated'
+        verbose_name_plural = 'Vacancies Meta Translated'
+
+
 class Vacancy(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     taxonomy = models.ForeignKey(FirstLevelTaxonomy, on_delete=models.CASCADE)
+    meta = models.ForeignKey(VacancyMetaTranslated, on_delete=models.SET_NULL, blank=True, null=True)
     url = models.SlugField(max_length=310, blank=True, unique=True, editable=False)
     title = models.CharField(max_length=300)
     text = models.TextField()
@@ -95,5 +109,3 @@ class SEOPage(models.Model):
 
 class KeyWord(models.Model):
     pass
-
-

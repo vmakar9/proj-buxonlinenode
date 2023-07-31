@@ -125,7 +125,7 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'BuxOnline API documentation',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAuthenticated'],
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
 }
 
 SIMPLE_JWT = {

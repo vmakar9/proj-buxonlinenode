@@ -1,8 +1,10 @@
+from drf_spectacular.types import OpenApiTypes
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
 from buxonline.serializers import VacancySerializer, FirstLevelTaxonomySerializer, LanguageSerializer
 from buxonline.models import Vacancy, FirstLevelTaxonomy, Language
+from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
 
 
 class DefaultPagination(PageNumberPagination):
@@ -15,6 +17,21 @@ class VacancyListApiView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     queryset = Vacancy.objects.all().order_by('pk')
     pagination_class = DefaultPagination
+
+    # @extend_schema(
+    #     parameters=[
+    #       OpenApiParameter("lang", OpenApiTypes.STR, OpenApiParameter.QUERY),
+    #     ],
+    # )
+    # def list(self, request, *args, **kwargs):
+    #     return super().list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        lang = self.request.query_params.get('lang')
+        if lang:
+            queryset = queryset.filter(language__code_a2=lang)
+        return queryset
 
 
 class FirstLevelTaxonomyListApiView(ListAPIView):

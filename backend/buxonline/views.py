@@ -16,7 +16,7 @@ class DefaultPagination(PageNumberPagination):
 class VacancyListApiView(ListAPIView):
     serializer_class = VacancySerializer
     permission_classes = [IsAuthenticatedOrReadOnly, ]
-    queryset = Vacancy.objects.all().order_by('pk').order_by('taxonomy')
+    queryset = Vacancy.objects.select_related('meta').order_by('pk').order_by('taxonomy')
     pagination_class = DefaultPagination
 
     def get_queryset(self):
@@ -38,7 +38,7 @@ class FirstLevelTaxonomyListApiView(ListAPIView):
     serializer_class = FirstLevelTaxonomySerializer
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     queryset = FirstLevelTaxonomy.objects.all().order_by('pk')
-    pagination_class = DefaultPagination
+    pagination_class = None
 
 
 class LanguageListApiView(ListAPIView):

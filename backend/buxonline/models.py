@@ -44,7 +44,7 @@ class TechnologyItem(models.Model):
 
 class Country(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    code_a2 = models.CharField(max_length=2)
+    code_a2 = models.CharField(max_length=2, unique=True)
     languages = models.ManyToManyField('Language', blank=True)
 
     def __str__(self):

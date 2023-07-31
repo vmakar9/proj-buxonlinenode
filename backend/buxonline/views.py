@@ -29,3 +29,24 @@ class LanguageListApiView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     queryset = Language.objects.all().order_by('pk')
     pagination_class = DefaultPagination
+
+
+class VacancyRetrieveAPIView(RetrieveAPIView):
+    serializer_class = VacancySerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    queryset = Vacancy.objects.all()
+    lookup_field = 'pk'
+
+
+class FirstLevelTaxonomyRetrieveAPIView(RetrieveAPIView):
+    serializer_class = FirstLevelTaxonomySerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    queryset = FirstLevelTaxonomy.objects.all()
+    lookup_field = 'pk'
+
+
+class LanguageRetrieveAPIView(RetrieveAPIView):
+    serializer_class = LanguageSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    queryset = Language.objects.all()
+    lookup_field = 'pk'

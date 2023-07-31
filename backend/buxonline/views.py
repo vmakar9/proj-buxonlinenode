@@ -1,10 +1,11 @@
-from drf_spectacular.types import OpenApiTypes
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.exceptions import ParseError
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
 from buxonline.serializers import VacancySerializer, FirstLevelTaxonomySerializer, LanguageSerializer
 from buxonline.models import Vacancy, FirstLevelTaxonomy, Language
-from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
+# from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
+# from drf_spectacular.types import OpenApiTypes
 
 
 class DefaultPagination(PageNumberPagination):
@@ -15,22 +16,21 @@ class DefaultPagination(PageNumberPagination):
 class VacancyListApiView(ListAPIView):
     serializer_class = VacancySerializer
     permission_classes = [IsAuthenticatedOrReadOnly, ]
-    queryset = Vacancy.objects.all().order_by('pk')
+    queryset = Vacancy.objects.all().order_by('pk').order_by('taxonomy')
     pagination_class = DefaultPagination
-
-    # @extend_schema(
-    #     parameters=[
-    #       OpenApiParameter("lang", OpenApiTypes.STR, OpenApiParameter.QUERY),
-    #     ],
-    # )
-    # def list(self, request, *args, **kwargs):
-    #     return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = super().get_queryset()
         lang = self.request.query_params.get('lang')
+        category = self.request.query_params.get('category')
         if lang:
             queryset = queryset.filter(language__code_a2=lang)
+        if category:
+            try:
+                category_id = int(category)
+            except ValueError:
+                raise ParseError(detail='Invalid category value. It must be an integer.')
+            queryset = queryset.filter(taxonomy_id=category_id)
         return queryset
 
 

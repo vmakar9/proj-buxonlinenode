@@ -45,7 +45,7 @@ class LanguageListApiView(ListAPIView):
     serializer_class = LanguageSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     queryset = Language.objects.all().order_by('pk')
-    pagination_class = DefaultPagination
+    pagination_class = None
 
 
 class VacancyRetrieveAPIView(RetrieveAPIView):

@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -53,6 +54,25 @@ class VacancyRetrieveAPIView(RetrieveAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     queryset = Vacancy.objects.all()
     lookup_field = 'pk'
+
+    def get_object(self):
+        to_lang = self.request.query_params.get('to_lang', None)
+        obj = super().get_object()
+        if to_lang:
+            try:
+                switch_lang = get_object_or_404(Language, code_a2=to_lang)
+            except Language.DoesNotExist:
+                raise ParseError(detail='Incorrect lang code or not found.')
+            if switch_lang.code_a2 == 'en' and obj.parent:
+                translated_obj = obj.parent
+            elif switch_lang.code_a2 == 'en' and not obj.parent:
+                return obj
+            elif obj.parent:
+                translated_obj = obj.parent.children.filter(language=switch_lang).first()
+            else:
+                translated_obj = obj.children.filter(language=switch_lang).first()
+            return translated_obj
+        return obj
 
 
 class FirstLevelTaxonomyRetrieveAPIView(RetrieveAPIView):

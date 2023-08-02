@@ -68,9 +68,9 @@ class Language(models.Model):
 
 
 class VacancyMetaTranslated(models.Model):
-    language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    more = models.CharField(max_length=512)
-    apply_for_job = models.CharField(max_length=512)
+    language = models.OneToOneField(Language, on_delete=models.CASCADE)
+    more = models.CharField(max_length=512, blank=True)
+    apply_for_job = models.CharField(max_length=512, blank=True)
 
     def __str__(self):
         return f'{self.language} -> {self.more}'

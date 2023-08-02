@@ -1,34 +1,64 @@
-import deepl
 import os
+import uuid
 import django
+import requests
 from time import sleep
+from dotenv import load_dotenv
 
 if __name__ == '__main__':
     os.environ["DJANGO_SETTINGS_MODULE"] = 'config.settings'
     django.setup()
-    from buxonline.models import Language, Vacancy
+    from buxonline.models import Language, Vacancy, VacancyMetaTranslated
+    load_dotenv()
 
-auth_key = ''
-translator = deepl.Translator(auth_key)
 
-lang = Language.objects.filter(code_a2='uk').first()
+def translate_to_one_lang_with_azure(api_key: str, from_lang: str, to_lang: str, text: str) -> str:
+    endpoint = "https://api.cognitive.microsofttranslator.com/translate"
+    params = {'api-version': '3.0', 'from': from_lang.lower(), 'to': [to_lang.lower(), ]}
+    headers = {
+        'Ocp-Apim-Subscription-Key': api_key,
+        'Ocp-Apim-Subscription-Region': "eastus",
+        'Content-type': 'application/json',
+        'X-ClientTraceId': str(uuid.uuid4())
+    }
+    body = [{'text': text}]
+    request = requests.post(url=endpoint, params=params, headers=headers, json=body)
+    response = request.json()
+    result = response[0].get('translations')
+    if result:
+        return result[0].get('text')
+    return ''
+
+
+azure_translate_api_key = os.environ.get('AZURE_TRANSLATE_API_KEY')
+
+lang = Language.objects.filter(code_a2='ca').first()
 try:
-    vacancies = Vacancy.objects.filter(parent__isnull=True).order_by('pk')
+    vacancies = Vacancy.objects.filter(parent__isnull=True).order_by('pk')  # [3:]
     for count, v in enumerate(vacancies):
-        if count > 191:
-            title_translated = translator.translate_text(v.title, target_lang=lang.code_a2.upper())
-            sleep(0.5)
-            text_translated = translator.translate_text(v.text, target_lang=lang.code_a2.upper())
-            translated_v = Vacancy.objects.create(
-                language=lang,
-                taxonomy=v.taxonomy,
-                title=title_translated,
-                text=text_translated,
-                parent=v,
-            )
-            sleep(0.5)
-            print(f'> {count+1}/{len(vacancies)} done! ({translated_v}).')
-except deepl.exceptions.DeepLException as deepl_ex:
-    print('> deepl_error:', deepl_ex)
+        title_translated = translate_to_one_lang_with_azure(
+            api_key=azure_translate_api_key,
+            from_lang=v.language.code_a2,
+            to_lang=lang.code_a2,
+            text=v.title,
+        )
+        sleep(0.3)
+        text_translated = translate_to_one_lang_with_azure(
+            api_key=azure_translate_api_key,
+            from_lang=v.language.code_a2,
+            to_lang=lang.code_a2,
+            text=v.text,
+        )
+        translated_v_meta, created = VacancyMetaTranslated.objects.get_or_create(language=lang)
+        translated_v = Vacancy.objects.create(
+            language=lang,
+            taxonomy=v.taxonomy,
+            meta=translated_v_meta,
+            title=title_translated,
+            text=text_translated,
+            parent=v,
+        )
+        sleep(0.3)
+        print(f'> {count+1}/{len(vacancies)} done! ({translated_v}).')
 except Exception as ex:
-    print('> error:', ex)
+    print('> translate error:', ex)

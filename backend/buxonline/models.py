@@ -99,7 +99,7 @@ class Vacancy(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.url:
-            self.url = f"{slugify(self.taxonomy.role)}-{str(uuid4())[:6]}"
+            self.url = f"{slugify(self.taxonomy.role)}-{str(uuid4())[:8]}"
         super(Vacancy, self).save(*args, **kwargs)
 
 

@@ -3,7 +3,9 @@ from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
-from buxonline.serializers import VacancySerializer, FirstLevelTaxonomySerializer, LanguageSerializer
+from buxonline.serializers import (
+    VacancySerializer, FirstLevelTaxonomySerializer, LanguageSerializer, FirstLevelTaxonomyExtendedSerializer
+)
 from buxonline.models import Vacancy, FirstLevelTaxonomy, Language
 # from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
 # from drf_spectacular.types import OpenApiTypes
@@ -76,7 +78,7 @@ class VacancyRetrieveAPIView(RetrieveAPIView):
 
 
 class FirstLevelTaxonomyRetrieveAPIView(RetrieveAPIView):
-    serializer_class = FirstLevelTaxonomySerializer
+    serializer_class = FirstLevelTaxonomyExtendedSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     queryset = FirstLevelTaxonomy.objects.all()
     lookup_field = 'pk'

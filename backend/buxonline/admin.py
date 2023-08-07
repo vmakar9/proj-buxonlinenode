@@ -1,6 +1,7 @@
 from django.contrib import admin
 from buxonline.models import (
-    FirstLevelTaxonomy, SecondLevelTaxonomy, TechnologyItem, Country, Language, Vacancy, VacancyMetaTranslated
+    FirstLevelTaxonomy, SecondLevelTaxonomy, TechnologyItem, Country, Language, Vacancy, VacancyMetaTranslated,
+    LanguageMeta
 )
 
 
@@ -18,3 +19,4 @@ admin.site.register(Country)
 admin.site.register(Language)
 admin.site.register(VacancyMetaTranslated)
 admin.site.register(Vacancy, VacancyAdmin)
+admin.site.register(LanguageMeta)

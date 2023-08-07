@@ -67,6 +67,29 @@ class Language(models.Model):
         verbose_name_plural = 'Languages'
 
 
+class LanguageMeta(models.Model):
+    language = models.OneToOneField(Language, on_delete=models.CASCADE)
+    menu_vacancies = models.CharField(max_length=512, blank=True)
+    menu_for_business = models.CharField(max_length=512, blank=True)
+    menu_send_cv = models.CharField(max_length=512, blank=True)
+    menu_categories = models.CharField(max_length=512, blank=True)
+    footer_bot = models.CharField(max_length=512, blank=True)
+    footer_privacy = models.CharField(max_length=512, blank=True)
+    footer_cookie = models.CharField(max_length=512, blank=True)
+    footer_rights = models.CharField(max_length=512, blank=True)
+    err_title = models.CharField(max_length=512, blank=True)
+    err_subtitle = models.CharField(max_length=512, blank=True)
+    err_text = models.CharField(max_length=512, blank=True)
+    err_link = models.CharField(max_length=512, blank=True)
+
+    def __str__(self):
+        return self.language.__str__()
+
+    class Meta:
+        verbose_name = 'Language Meta'
+        verbose_name_plural = 'Languages Meta'
+
+
 class VacancyMetaTranslated(models.Model):
     language = models.OneToOneField(Language, on_delete=models.CASCADE)
     more = models.CharField(max_length=512, blank=True)
@@ -76,8 +99,8 @@ class VacancyMetaTranslated(models.Model):
         return f'{self.language} -> {self.more}'
 
     class Meta:
-        verbose_name = 'Vacancy Meta Translated'
-        verbose_name_plural = 'Vacancies Meta Translated'
+        verbose_name = 'Vacancy Meta'
+        verbose_name_plural = 'Vacancies Meta'
 
 
 class Vacancy(models.Model):

@@ -38,7 +38,7 @@ class VacancyListApiView(ListAPIView):
 
 
 class FirstLevelTaxonomyListApiView(ListAPIView):
-    serializer_class = FirstLevelTaxonomySerializer
+    serializer_class = FirstLevelTaxonomyExtendedSerializer  # ToDo optimize
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     queryset = FirstLevelTaxonomy.objects.all().order_by('pk')
     pagination_class = None

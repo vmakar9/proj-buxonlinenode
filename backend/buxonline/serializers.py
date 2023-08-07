@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from buxonline.models import Vacancy, FirstLevelTaxonomy, Language, VacancyMetaTranslated
+from buxonline.models import Vacancy, FirstLevelTaxonomy, Language, VacancyMetaTranslated, LanguageMeta
 
 
 class VacancyMetaTranslatedSerializer(serializers.ModelSerializer):
@@ -33,7 +33,15 @@ class FirstLevelTaxonomyExtendedSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LanguageMetaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LanguageMeta
+        exclude = ('id', 'language')
+
+
 class LanguageSerializer(serializers.ModelSerializer):
+    page_meta = LanguageMetaSerializer(source='languagemeta')
+
     class Meta:
         model = Language
         fields = '__all__'

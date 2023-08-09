@@ -4,9 +4,10 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
 from buxonline.serializers import (
-    VacancySerializer, FirstLevelTaxonomySerializer, LanguageSerializer, FirstLevelTaxonomyExtendedSerializer
+    VacancySerializer, FirstLevelTaxonomySerializer, LanguageSerializer, FirstLevelTaxonomyExtendedSerializer,
+    LandingSerializer,
 )
-from buxonline.models import Vacancy, FirstLevelTaxonomy, Language
+from buxonline.models import Vacancy, FirstLevelTaxonomy, Language, Landing
 # from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
 # from drf_spectacular.types import OpenApiTypes
 
@@ -89,3 +90,23 @@ class LanguageRetrieveAPIView(RetrieveAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     queryset = Language.objects.all()
     lookup_field = 'pk'
+
+
+class LandingListApiView(ListAPIView):
+    serializer_class = LandingSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    queryset = Landing.objects.all().order_by('pk')
+    pagination_class = None
+
+
+class LandingRetrieveAPIView(RetrieveAPIView):
+    serializer_class = LandingSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    queryset = Landing.objects.all()
+
+    def get_object(self):
+        language_id = self.kwargs.get('language_id')
+        queryset = self.filter_queryset(self.get_queryset())
+        obj = queryset.get(language_id=language_id)
+        self.check_object_permissions(self.request, obj)
+        return obj

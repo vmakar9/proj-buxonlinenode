@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from buxonline.models import Vacancy, FirstLevelTaxonomy, Language, VacancyMetaTranslated, LanguageMeta
+from buxonline.models import (
+    Vacancy, FirstLevelTaxonomy, Language, VacancyMetaTranslated, LanguageMeta, Landing, LandingStep,
+)
 
 
 class VacancyMetaTranslatedSerializer(serializers.ModelSerializer):
@@ -44,4 +46,18 @@ class LanguageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Language
+        fields = '__all__'
+
+
+class LandingStepSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LandingStep
+        exclude = ('id', 'landing')
+
+
+class LandingSerializer(serializers.ModelSerializer):
+    steps = LandingStepSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Landing
         fields = '__all__'

@@ -1,6 +1,7 @@
 from django.urls import path
 from buxonline.views import (VacancyListApiView, FirstLevelTaxonomyListApiView, LanguageListApiView,
-                             VacancyRetrieveAPIView, FirstLevelTaxonomyRetrieveAPIView, LanguageRetrieveAPIView)
+                             VacancyRetrieveAPIView, FirstLevelTaxonomyRetrieveAPIView, LanguageRetrieveAPIView,
+                             LandingListApiView, LandingRetrieveAPIView)
 
 urlpatterns = [
     path('vacancy/list/', VacancyListApiView.as_view(), name='vacancy_list'),
@@ -9,4 +10,6 @@ urlpatterns = [
     path('vacancy/<int:pk>/', VacancyRetrieveAPIView.as_view(), name='vacancy'),
     path('category/<int:pk>/', FirstLevelTaxonomyRetrieveAPIView.as_view(), name='category'),
     path('language/<int:pk>/', LanguageRetrieveAPIView.as_view(), name='language'),
+    path('landing/list/', LandingListApiView.as_view(), name='landing_list'),
+    path('landing/<int:language_id>/', LandingRetrieveAPIView.as_view(), name='landing'),
 ]

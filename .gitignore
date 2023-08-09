@@ -163,3 +163,4 @@ cython_debug/
 !**/migrations/__init__.py
 
 /backend/ads_text_generator/temp*
+/backend/buxonline/fixtures/*.json

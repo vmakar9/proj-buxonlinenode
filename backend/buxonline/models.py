@@ -126,6 +126,55 @@ class Vacancy(models.Model):
         super(Vacancy, self).save(*args, **kwargs)
 
 
+class Landing(models.Model):
+    language = models.OneToOneField(Language, on_delete=models.CASCADE)
+    hero_title = models.CharField(max_length=1024)
+    hero_desc = models.CharField(max_length=1024)
+    about_title = models.CharField(max_length=1024)
+    about_description = models.CharField(max_length=1024)
+    about_subtitle_1 = models.CharField(max_length=1024)
+    about_text_1 = models.CharField(max_length=1024)
+    about_subtitle_2 = models.CharField(max_length=256, default='English - Intermediate')
+    about_text_2 = models.CharField(max_length=1024)
+    steps_title = models.CharField(max_length=1024)
+    # step
+    feat_title = models.CharField(max_length=1024)
+    feat_cta = models.CharField(max_length=1024)
+    feat_find = models.CharField(max_length=1024)
+    feat_time = models.CharField(max_length=1024)
+    feat_law = models.CharField(max_length=1024)
+    feat_happy = models.CharField(max_length=1024)
+    form = models.CharField(max_length=1024)
+    bot_team = models.CharField(max_length=1024)
+    bot_qa = models.CharField(max_length=1024)
+    bot_chat = models.CharField(max_length=1024)
+    bot_att = models.CharField(max_length=1024)
+    bot_lng = models.CharField(max_length=1024)
+
+    class Meta:
+        verbose_name = 'Landing'
+        verbose_name_plural = 'Landings'
+
+    def __str__(self):
+        return f'{self.language.__str__()} -> {self.hero_title}'
+
+
+class LandingStep(models.Model):
+    landing = models.ForeignKey(Landing, on_delete=models.CASCADE, related_name='steps')
+    number = models.SmallIntegerField()
+    title = models.CharField(max_length=1024)
+    text = models.CharField(max_length=1024)
+    time = models.SmallIntegerField()
+    label = models.CharField(max_length=1024)
+
+    class Meta:
+        verbose_name = 'Landing Step'
+        verbose_name_plural = 'Landing Steps'
+
+    def __str__(self):
+        return f'{self.landing.__str__()} -> number: {self.number} -> {self.title}'
+
+
 class SEOPage(models.Model):
     pass
 

@@ -25,7 +25,7 @@ class FirstLevelTaxonomySerializer(serializers.ModelSerializer):
 class FirstLevelTaxonomyExtendedSerializer(serializers.ModelSerializer):
     vacancies_count = serializers.SerializerMethodField()
 
-    def get_vacancies_count(self, instance):
+    def get_vacancies_count(self, instance) -> int:
         return instance.vacancy_set.count()
 
     class Meta:

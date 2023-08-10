@@ -60,4 +60,4 @@ class LandingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Landing
-        fields = '__all__'
+        exclude = ('language', )

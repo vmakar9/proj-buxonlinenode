@@ -62,10 +62,7 @@ class VacancyRetrieveAPIView(RetrieveAPIView):
         to_lang = self.request.query_params.get('to_lang', None)
         obj = super().get_object()
         if to_lang:
-            try:
-                switch_lang = get_object_or_404(Language, code_a2=to_lang)
-            except Language.DoesNotExist:
-                raise ParseError(detail='Incorrect lang code or not found.')
+            switch_lang = get_object_or_404(Language, code_a2=to_lang)
             if switch_lang.code_a2 == 'en' and obj.parent:
                 translated_obj = obj.parent
             elif switch_lang.code_a2 == 'en' and not obj.parent:
@@ -105,8 +102,9 @@ class LandingRetrieveAPIView(RetrieveAPIView):
     queryset = Landing.objects.all()
 
     def get_object(self):
-        language_id = self.kwargs.get('language_id')
+        language_code = self.kwargs.get('language_code')
         queryset = self.filter_queryset(self.get_queryset())
-        obj = queryset.get(language_id=language_id)
+        lang = get_object_or_404(Language, code_a2=language_code)
+        obj = queryset.get(language=lang)
         self.check_object_permissions(self.request, obj)
         return obj

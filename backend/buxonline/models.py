@@ -128,6 +128,7 @@ class Vacancy(models.Model):
 
 class Landing(models.Model):
     language = models.OneToOneField(Language, on_delete=models.CASCADE)
+    btn_text = models.CharField(max_length=1024, default='Send CV')
     hero_title = models.CharField(max_length=1024)
     hero_desc = models.CharField(max_length=1024)
     about_title = models.CharField(max_length=1024)

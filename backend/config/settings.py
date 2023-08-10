@@ -42,12 +42,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS_ALLOW_ALL_ORIGINS = True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+CORS_ALLOW_ALL_ORIGINS = True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    'http://api-dev.buxonline.org', 'https://api-dev.buxonline.org', 'http://20.232.116.40', 'https://buxonline.org',
-    'http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001',
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://api-dev.buxonline.org', 'https://api-dev.buxonline.org', 'http://20.232.116.40', 'https://buxonline.org',
+#     'http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001',
+# ]
 
 ROOT_URLCONF = 'config.urls'
 

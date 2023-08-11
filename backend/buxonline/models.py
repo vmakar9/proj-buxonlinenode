@@ -176,6 +176,21 @@ class LandingStep(models.Model):
         return f'{self.landing.__str__()} -> number: {self.number} -> {self.title}'
 
 
+class LandingFeedback(models.Model):
+    landing = models.ForeignKey(Landing, on_delete=models.CASCADE, related_name='feedbacks')
+    photo = models.CharField(max_length=1024)
+    full_name = models.CharField(max_length=1024)
+    position = models.CharField(max_length=1024)
+    text = models.TextField()
+
+    class Meta:
+        verbose_name = 'Landing Feedback'
+        verbose_name_plural = 'Landing Feedbacks'
+
+    def __str__(self):
+        return f'{self.landing.__str__()} -> {self.full_name} -> {self.position}'
+
+
 class SEOPage(models.Model):
     pass
 

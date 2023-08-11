@@ -1,7 +1,7 @@
 from django.contrib import admin
 from buxonline.models import (
     FirstLevelTaxonomy, SecondLevelTaxonomy, TechnologyItem, Country, Language, Vacancy, VacancyMetaTranslated,
-    LanguageMeta, Landing, LandingStep
+    LanguageMeta, Landing, LandingStep, LandingFeedback
 )
 
 
@@ -19,8 +19,14 @@ class LandingStepInline(admin.StackedInline):
     can_delete = False
 
 
+class LandingFeedbackInline(admin.StackedInline):
+    model = LandingFeedback
+    extra = 3
+    max_num = 10
+
+
 class LandingAdmin(admin.ModelAdmin):
-    inlines = (LandingStepInline, )
+    inlines = (LandingStepInline, LandingFeedbackInline)
 
 
 admin.site.register(FirstLevelTaxonomy)
@@ -33,3 +39,4 @@ admin.site.register(Vacancy, VacancyAdmin)
 admin.site.register(LanguageMeta)
 admin.site.register(Landing, LandingAdmin)
 admin.site.register(LandingStep)
+admin.site.register(LandingFeedback)

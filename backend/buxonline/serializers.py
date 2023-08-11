@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from buxonline.models import (
-    Vacancy, FirstLevelTaxonomy, Language, VacancyMetaTranslated, LanguageMeta, Landing, LandingStep,
+    Vacancy, FirstLevelTaxonomy, Language, VacancyMetaTranslated, LanguageMeta, Landing, LandingStep, LandingFeedback
 )
 
 
@@ -59,8 +59,15 @@ class LandingStepSerializer(serializers.ModelSerializer):
         exclude = ('id', 'landing')
 
 
+class LandingFeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LandingFeedback
+        exclude = ('id', 'landing', 'photo')
+
+
 class LandingSerializer(serializers.ModelSerializer):
     steps = LandingStepSerializer(many=True, read_only=True)
+    feedbacks = LandingFeedbackSerializer(many=True, read_only=True)
 
     class Meta:
         model = Landing

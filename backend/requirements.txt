@@ -6,7 +6,6 @@ attrs==23.1.0
 beautifulsoup4==4.12.2
 certifi==2023.5.7
 charset-normalizer==3.2.0
-deepl==1.15.0
 Django==4.2.3
 django-cors-headers==4.2.0
 django-filter==23.2

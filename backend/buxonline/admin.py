@@ -1,11 +1,37 @@
 from django.contrib import admin
 from buxonline.models import (
     FirstLevelTaxonomy, SecondLevelTaxonomy, TechnologyItem, Country, Language, Vacancy, VacancyMetaTranslated,
-    LanguageMeta, Landing, LandingStep, LandingFeedback
+    LanguageMeta, Landing, LandingStep, LandingFeedback, VacancyRawKeyWord, VacancyGoogleKeyWord, VacancyHeader,
+    VacancyDescription,
 )
 
 
+class VacancyRawKeyWordInline(admin.StackedInline):
+    model = VacancyRawKeyWord
+    extra = 0
+    max_num = 15
+
+
+class VacancyGoogleKeyWordInline(admin.StackedInline):
+    model = VacancyGoogleKeyWord
+    extra = 0
+    max_num = 50
+
+
+class VacancyHeaderInline(admin.StackedInline):
+    model = VacancyHeader
+    extra = 0
+    max_num = 15
+
+
+class VacancyDescriptionInline(admin.StackedInline):
+    model = VacancyDescription
+    extra = 0
+    max_num = 4
+
+
 class VacancyAdmin(admin.ModelAdmin):
+    inlines = (VacancyRawKeyWordInline, VacancyGoogleKeyWordInline, VacancyHeaderInline, VacancyDescriptionInline)
     list_filter = ('language', 'taxonomy',)
     list_display = ('title', 'language', 'taxonomy', )
     search_fields = ('title', 'text', )

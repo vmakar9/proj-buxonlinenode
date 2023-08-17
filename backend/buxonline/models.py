@@ -118,7 +118,7 @@ class Vacancy(models.Model):
         verbose_name_plural = 'Vacancies'
 
     def __str__(self):
-        return f'{self.title} [{self.url}]'
+        return f'id: {self.pk}, {self.title} [{self.url}]'
 
     def save(self, *args, **kwargs):
         if not self.url:
@@ -191,9 +191,49 @@ class LandingFeedback(models.Model):
         return f'{self.landing.__str__()} -> {self.full_name} -> {self.position}'
 
 
-class SEOPage(models.Model):
-    pass
+class VacancyRawKeyWord(models.Model):
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
+    text = models.CharField(max_length=30)
+
+    class Meta:
+        verbose_name = 'Vacancy Raw KeyWord'
+        verbose_name_plural = 'Vacancy Raw KeyWords'
+
+    def __str__(self):
+        return f'v.id: {self.vacancy.id}, text (raw): {self.text}'
 
 
-class KeyWord(models.Model):
-    pass
+class VacancyGoogleKeyWord(models.Model):
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
+    text = models.CharField(max_length=30)
+
+    class Meta:
+        verbose_name = 'Vacancy Google KeyWord'
+        verbose_name_plural = 'Vacancy Google KeyWords'
+
+    def __str__(self):
+        return f'v.id: {self.vacancy.id}, text: {self.text}'
+
+
+class VacancyHeader(models.Model):
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
+    text = models.CharField(max_length=30)
+
+    class Meta:
+        verbose_name = 'Vacancy Header'
+        verbose_name_plural = 'Vacancy Headers'
+
+    def __str__(self):
+        return f'v.id: {self.vacancy.id}, text: {self.text}'
+
+
+class VacancyDescription(models.Model):
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
+    text = models.CharField(max_length=90)
+
+    class Meta:
+        verbose_name = 'Vacancy Description'
+        verbose_name_plural = 'Vacancy Descriptions'
+
+    def __str__(self):
+        return f'v.id: {self.vacancy.id}, text: {self.text}'

@@ -33,7 +33,8 @@ class VacancyDescriptionInline(admin.StackedInline):
 class VacancyAdmin(admin.ModelAdmin):
     inlines = (VacancyRawKeyWordInline, VacancyGoogleKeyWordInline, VacancyHeaderInline, VacancyDescriptionInline)
     list_filter = ('language', 'taxonomy',)
-    list_display = ('title', 'language', 'taxonomy', )
+    list_display = ('id', 'title', 'language', 'taxonomy', )
+    list_display_links = ('id', 'title', )
     search_fields = ('title', 'text', )
     readonly_fields = ('url', )
 

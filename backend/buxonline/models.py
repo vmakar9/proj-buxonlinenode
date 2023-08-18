@@ -151,6 +151,10 @@ class Landing(models.Model):
     bot_chat = models.CharField(max_length=1024)
     bot_att = models.CharField(max_length=1024)
     bot_lng = models.CharField(max_length=1024)
+    #
+    reviews_title = models.CharField(max_length=1024, default='Reviews')
+    hot_vacancies = models.CharField(max_length=1024, default='Hot vacancies')
+    we_are_employed = models.CharField(max_length=1024, default='We have already employed almost 260 people')
 
     class Meta:
         verbose_name = 'Landing'
@@ -193,7 +197,7 @@ class LandingFeedback(models.Model):
 
 class VacancyRawKeyWord(models.Model):
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
-    text = models.CharField(max_length=30)
+    text = models.CharField(max_length=40)
 
     class Meta:
         verbose_name = 'Vacancy Raw KeyWord'

@@ -7,7 +7,7 @@ from buxonline.models import (
 class VacancyMetaTranslatedSerializer(serializers.ModelSerializer):
     class Meta:
         model = VacancyMetaTranslated
-        fields = ('more', 'apply_for_job')
+        exclude = ('id', 'language')
 
 
 class VacancySerializer(serializers.ModelSerializer):

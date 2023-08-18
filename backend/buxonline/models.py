@@ -92,6 +92,7 @@ class LanguageMeta(models.Model):
 
 class VacancyMetaTranslated(models.Model):
     language = models.OneToOneField(Language, on_delete=models.CASCADE)
+    categories = models.CharField(max_length=512, default='Categories')
     more = models.CharField(max_length=512, blank=True)
     apply_for_job = models.CharField(max_length=512, blank=True)
 

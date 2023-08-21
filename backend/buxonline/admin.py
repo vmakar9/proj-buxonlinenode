@@ -56,10 +56,16 @@ class LandingAdmin(admin.ModelAdmin):
     inlines = (LandingStepInline, LandingFeedbackInline)
 
 
+class CountryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'code_a2', )
+    list_display_links = ('id', 'name',)
+    list_filter = ('languages', )
+
+
 admin.site.register(FirstLevelTaxonomy)
 admin.site.register(SecondLevelTaxonomy)
 admin.site.register(TechnologyItem)
-admin.site.register(Country)
+admin.site.register(Country, CountryAdmin)
 admin.site.register(Language)
 admin.site.register(VacancyMetaTranslated)
 admin.site.register(Vacancy, VacancyAdmin)

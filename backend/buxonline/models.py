@@ -45,6 +45,7 @@ class TechnologyItem(models.Model):
 class Country(models.Model):
     name = models.CharField(max_length=200, unique=True)
     code_a2 = models.CharField(max_length=2, unique=True)
+    google_location_id = models.SmallIntegerField(blank=True, null=True)
     languages = models.ManyToManyField('Language', blank=True)
 
     def __str__(self):
@@ -58,6 +59,7 @@ class Country(models.Model):
 class Language(models.Model):
     name = models.CharField(max_length=200, unique=True)
     code_a2 = models.CharField(max_length=2, blank=True)
+    google_lang_id = models.SmallIntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -210,7 +212,7 @@ class VacancyRawKeyWord(models.Model):
 
 class VacancyGoogleKeyWord(models.Model):
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
-    text = models.CharField(max_length=30)
+    text = models.CharField(max_length=70)
 
     class Meta:
         verbose_name = 'Vacancy Google KeyWord'

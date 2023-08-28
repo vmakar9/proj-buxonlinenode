@@ -164,3 +164,5 @@ cython_debug/
 
 /backend/ads_text_generator/temp*
 /backend/buxonline/fixtures/*.json
+/backend/buxonline/fixtures/google_ads_api/google-ads.yaml
+/backend/buxonline/fixtures/google_ads_api/skipped_vacancies_ids.txt

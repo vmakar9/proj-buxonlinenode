@@ -139,11 +139,6 @@ def limit_phrase(phrase, limit):
     return ' '.join(result)
 
 
-# input_phrase = "This is a sample sentence that1 needs to be limited."
-# limited_phrase = limit_phrase(input_phrase, 30)
-# print(limited_phrase)
-
-
 if __name__ == '__main__':
     import os
     import django
@@ -156,9 +151,9 @@ if __name__ == '__main__':
 
 if __name__ == '__main__':
     OPENAI_API_KEY = os.environ.get('AZURE_OPENAI_API_KEY')
-    vacancies = Vacancy.objects.filter(language_id=2).order_by('pk')
+    vacancies = Vacancy.objects.filter(language__name='Italian').order_by('pk')
     for count, vacancy in enumerate(vacancies):
-        # if vacancy.id <= 360:
+        # if vacancy.id <= 1519:
         #     continue
         keywords_prompt = get_keywords_prompt(vacancy.language.name, vacancy.title, vacancy.text)
         keywords = generate_ads_data(prompt=keywords_prompt, api_key=OPENAI_API_KEY, target_element_len=40)

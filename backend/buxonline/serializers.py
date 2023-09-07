@@ -12,6 +12,7 @@ class VacancyMetaTranslatedSerializer(serializers.ModelSerializer):
 
 class VacancySerializer(serializers.ModelSerializer):
     meta = VacancyMetaTranslatedSerializer()
+    text = serializers.CharField(source='text_html')
 
     class Meta:
         model = Vacancy

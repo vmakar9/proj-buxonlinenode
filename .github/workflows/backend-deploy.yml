@@ -29,10 +29,10 @@ jobs:
             --build-arg POSTGRES_ENGINE=${{ vars.POSTGRES_ENGINE }} \
             --build-arg POSTGRES_DB=${{ vars.POSTGRES_DB }} \
             --build-arg POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
-            --build-arg POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            --build-arg POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
             --build-arg POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}  \
-            --build-arg SECRET_KEY='${{ secrets.SECRET_KEY }}'  \
-            --build-arg ALLOWED_HOSTS='${{ vars.ALLOWED_HOSTS }}' \
+            --build-arg SECRET_KEY="${{ secrets.SECRET_KEY }}"  \
+            --build-arg ALLOWED_HOSTS="${{ vars.ALLOWED_HOSTS }}" \
             --build-arg DEBUG=${{ vars.DEBUG }}
             docker compose -f docker-compose.yml up -d
             docker ps -a

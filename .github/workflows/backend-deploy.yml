@@ -15,7 +15,7 @@ jobs:
         with:
           host: ${{ vars.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
+          key: '${{ secrets.KEY }}'
           port: "22"
           command_timeout: "30m"
           script: |
@@ -34,5 +34,5 @@ jobs:
             --build-arg SECRET_KEY='${{ secrets.SECRET_KEY }}'  \
             --build-arg ALLOWED_HOSTS='${{ vars.ALLOWED_HOSTS }}' \
             --build-arg DEBUG=${{ vars.DEBUG }}
-            docker compose -f docker-compose.yml up -d
+            docker compose -f "docker-compose.yml" up -d
             docker ps -a

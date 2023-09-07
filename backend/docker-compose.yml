@@ -42,11 +42,10 @@ services:
     restart: always
     hostname: celery_worker
     container_name: celery_worker
-    build: ./backend
+    build: ./
     command: celery -A config worker -l INFO
     volumes:
-      - ./backend:/usr/src/django_back
-      - ./chrome-data:/usr/src/chrome-data
+      - ./:/usr/src/django_back
     environment:
       - DEBUG=1
     depends_on:
@@ -54,13 +53,12 @@ services:
 
   celery-beat:
     restart: always
-    build: ./backend
+    build: ./
     hostname: celery_beat
     container_name: celery_beat
     command: celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
-      - ./backend:/usr/src/django_back
-      - ./chrome-data:/usr/src/chrome-data
+      - ./:/usr/src/django_back
     environment:
       - DEBUG=1
     depends_on:

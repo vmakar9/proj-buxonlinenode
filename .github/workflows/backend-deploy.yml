@@ -25,7 +25,7 @@ jobs:
             git pull git@github.com:UPCoD-UNKD/proj-buxonline.git main
             cd backend
             docker compose -f "docker-compose.yml" down
-            docker compose -f "docker-compose.yml" up -d --build \
+            docker compose -f "docker-compose.yml" build \
             --build-arg POSTGRES_ENGINE='${{ vars.POSTGRES_ENGINE }}' \
             --build-arg POSTGRES_DB='${{ vars.POSTGRES_DB }}' \
             --build-arg POSTGRES_USER='${{ secrets.POSTGRES_USER }}' \
@@ -34,3 +34,4 @@ jobs:
             --build-arg SECRET_KEY='${{ secrets.SECRET_KEY }}' \
             --build-arg ALLOWED_HOSTS='${{ vars.ALLOWED_HOSTS }}' \
             --build-arg DEBUG='${{ vars.DEBUG }}'
+            docker compose -f "docker-compose.yml" up -d

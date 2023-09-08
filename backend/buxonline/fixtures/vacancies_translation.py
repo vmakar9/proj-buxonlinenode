@@ -63,3 +63,13 @@ if __name__ == '__main__':
                 print(f'> {count+1}/{len(vacancies)} done! ({translated_v}).')
         except Exception as ex:
             print('> translate error:', ex)
+
+# if __name__ == '__main__':
+#     azure_translate_api_key = os.environ.get('AZURE_TRANSLATE_API_KEY')
+#     result = translate_to_one_lang_with_azure(
+#         api_key=azure_translate_api_key,
+#         from_lang='uk',
+#         to_lang='en',
+#         text='Привіт!',
+#     )
+#     print(result)

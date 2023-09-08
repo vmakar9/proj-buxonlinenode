@@ -1,6 +1,17 @@
 import json
 import time
 import openai
+from buxonline.models import Vacancy
+from typing import List
+
+
+if __name__ == '__main__':
+    import os
+    import django
+    from dotenv import load_dotenv
+    load_dotenv()
+    os.environ["DJANGO_SETTINGS_MODULE"] = 'config.settings'
+    django.setup()
 
 
 def get_keywords_prompt(page_lang: str, page_title: str, page_description: str):
@@ -139,33 +150,26 @@ def limit_phrase(phrase, limit):
     return ' '.join(result)
 
 
-if __name__ == '__main__':
-    import os
-    import django
-    from dotenv import load_dotenv
-    load_dotenv()
-    AZURE_OPENAI_API_KEY = os.environ.get('AZURE_OPENAI_API_KEY')
-    os.environ["DJANGO_SETTINGS_MODULE"] = 'config.settings'
-    django.setup()
-    from buxonline.models import Vacancy
-
-if __name__ == '__main__':
-    OPENAI_API_KEY = os.environ.get('AZURE_OPENAI_API_KEY')
-    vacancies = Vacancy.objects.filter(language__name='Italian').order_by('pk')
+def generate_vacancy_seo_data(open_ai_api_key: str, vacancies: List[Vacancy]):
+    # vacancies = Vacancy.objects.filter(language__name='Italian').order_by('pk')
+    result = []
     for count, vacancy in enumerate(vacancies):
-        # if vacancy.id <= 1519:
+        # if vacancy.id <= 1816:
         #     continue
         keywords_prompt = get_keywords_prompt(vacancy.language.name, vacancy.title, vacancy.text)
-        keywords = generate_ads_data(prompt=keywords_prompt, api_key=OPENAI_API_KEY, target_element_len=40)
+        keywords = generate_ads_data(prompt=keywords_prompt, api_key=open_ai_api_key, target_element_len=40)
         for keyword in keywords[:15]:
             vacancy.vacancyrawkeyword_set.create(text=keyword[:40])
         headers_prompt = get_headers_prompt(vacancy.language.name, vacancy.title, vacancy.text)
-        headers = generate_ads_data(prompt=headers_prompt, api_key=OPENAI_API_KEY, target_element_len=30)
+        headers = generate_ads_data(prompt=headers_prompt, api_key=open_ai_api_key, target_element_len=30)
         for header in headers[:15]:
             vacancy.vacancyheader_set.create(text=header[:30])
         descriptions_prompt = get_descriptions_prompt(vacancy.language.name, vacancy.title, vacancy.text)
-        descriptions = generate_ads_data(prompt=descriptions_prompt, api_key=OPENAI_API_KEY, target_element_len=90)
+        descriptions = generate_ads_data(prompt=descriptions_prompt, api_key=open_ai_api_key, target_element_len=90)
         for desc in descriptions[:4]:
             vacancy.vacancydescription_set.create(text=desc[:90])
-        print(f'> {count+1}/{vacancies.count()} done | kw: [{vacancy.vacancyrawkeyword_set.count()}]; hd: '
-              f'[{vacancy.vacancyheader_set.count()}]; ds: [{vacancy.vacancydescription_set.count()}] --> {vacancy}')
+        log = f'> {count+1}/{vacancies.count()} done | kw: [{vacancy.vacancyrawkeyword_set.count()}]; hd: ' \
+              f'[{vacancy.vacancyheader_set.count()}]; ds: [{vacancy.vacancydescription_set.count()}] --> {vacancy}'
+        print(log)
+        result.append(log)
+    return result

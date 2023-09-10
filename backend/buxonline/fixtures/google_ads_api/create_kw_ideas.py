@@ -1,11 +1,10 @@
 import sys
 import time
 import uuid
-import datetime
-from pprint import pprint
+from typing import List
 from google.ads.googleads.client import GoogleAdsClient
 from google.ads.googleads.errors import GoogleAdsException
-
+from buxonline.models import Vacancy, Language
 
 _DATE_FORMAT = "%Y%m%d"
 
@@ -205,12 +204,11 @@ def generate_keyword_ideas(
         handle_googleads_exception(ex)
 
 
-def generate_google_keywords_for_vacancies(client, customer_id, vacancies, location_ids, language_id, start_from=None):
+def generate_google_keywords_for_vacancies(client, customer_id, vacancies, location_ids, language_id):
+    result = []
     for count, vacancy in enumerate(vacancies):
-        if start_from and vacancy.id < start_from:
-            continue
         raw_keywords = [kw.text for kw in vacancy.vacancyrawkeyword_set.all().order_by('pk')[:20]]
-        if not raw_keywords:
+        if not raw_keywords or vacancy.vacancygooglekeyword_set.all().count() > 7:
             continue
         google_keywords = generate_keyword_ideas(client=client, customer_id=customer_id, keyword_texts=raw_keywords,
                                                  location_ids=location_ids, language_id=language_id)
@@ -220,24 +218,34 @@ def generate_google_keywords_for_vacancies(client, customer_id, vacancies, locat
                 vacancy.vacancygooglekeyword_set.create(text=kw[0])
             else:
                 print('> keyword skipped:', kw)
-        print(f'>> {count + 1}/{vacancies.count()} done. Added {len(google_keywords)} google kwds --> {vacancy}')
+        log = f'>> {count + 1}/{vacancies.count()} done. Added {len(google_keywords)} google kwds --> {vacancy}'
+        print(log)
+        result.append(log)
+        return result
 
 
-if __name__ == '__main__':
-    import os
-    import django
-    from dotenv import load_dotenv
-    load_dotenv()
-    AZURE_OPENAI_API_KEY = os.environ.get('AZURE_OPENAI_API_KEY')
-    os.environ["DJANGO_SETTINGS_MODULE"] = 'config.settings'
-    django.setup()
-    from buxonline.models import Vacancy, Language
-    main_customer_id = '8620481282'
-    client = make_client()
-    lang = Language.objects.filter(name='French').first()
-    vacancies = Vacancy.objects.filter(language=lang).order_by('pk')
-    loc_ids = [i.google_location_id for i in lang.country_set.all() if i.google_location_id]
-    # start_from_vacancy_id = 82
-    generate_google_keywords_for_vacancies(client=client, customer_id=main_customer_id, vacancies=vacancies,
-                                           location_ids=loc_ids, language_id=lang.google_lang_id,
-                                           start_from=None)
+def generate_google_keyword_ideas(language: Language, vacancies: List[Vacancy]):  # ToDo google-ads.yaml !
+    customer_id = '8620481282'  # ASSOCIATION OF ASSISTANCE TO THE...
+    google_client = make_client()
+    google_loc_ids = [i.google_location_id for i in language.country_set.all() if i.google_location_id]
+    res = generate_google_keywords_for_vacancies(client=google_client, customer_id=customer_id, vacancies=vacancies,
+                                                 location_ids=google_loc_ids, language_id=language.google_lang_id)
+    return res
+
+
+# if __name__ == '__main__':
+#     import os
+#     import django
+#     from dotenv import load_dotenv
+#     load_dotenv()
+#     AZURE_OPENAI_API_KEY = os.environ.get('AZURE_OPENAI_API_KEY')
+#     os.environ["DJANGO_SETTINGS_MODULE"] = 'config.settings'
+#     django.setup()
+#     from buxonline.models import Vacancy, Language
+#     main_customer_id = '8620481282'
+#     client = make_client()
+#     lang = Language.objects.filter(name='Italian').first()
+#     vacancies = Vacancy.objects.filter(language=lang).order_by('pk')
+#     loc_ids = [i.google_location_id for i in lang.country_set.all() if i.google_location_id]
+#     generate_google_keywords_for_vacancies(client=client, customer_id=main_customer_id, vacancies=vacancies,
+#                                            location_ids=loc_ids, language_id=lang.google_lang_id)

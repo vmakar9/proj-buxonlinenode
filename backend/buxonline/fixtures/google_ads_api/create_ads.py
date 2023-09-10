@@ -1,8 +1,10 @@
 import sys
 import time
 import uuid
+from typing import List
 from google.ads.googleads.client import GoogleAdsClient
 from google.ads.googleads.errors import GoogleAdsException
+from buxonline.models import Vacancy
 
 
 def make_client(path: str = 'google-ads.yaml') -> GoogleAdsClient:
@@ -148,23 +150,11 @@ def add_responsive_search_ad(client, customer_id, ad_group_id, target_url: str, 
         handle_googleads_exception(ex, sys_exit=False)
 
 
-if __name__ == '__main__':
-    import os
-    import django
-    from dotenv import load_dotenv
-    load_dotenv()
-    AZURE_OPENAI_API_KEY = os.environ.get('AZURE_OPENAI_API_KEY')
-    os.environ["DJANGO_SETTINGS_MODULE"] = 'config.settings'
-    django.setup()
-    from buxonline.models import Vacancy, Language
+def generate_google_ads(main_campaign_id: str, vacancies: List[Vacancy]):
     main_customer_id = '8620481282'
-    main_campaign_id = '20503392199'  # ToDo
     google_api_client = make_client()
-    lang = Language.objects.filter(name='French').first()
-    vacancies = Vacancy.objects.filter(language=lang).order_by('pk')
+    result = []
     for v in vacancies:
-        # if v.id <= 111:
-        #     continue
         if not v.vacancygooglekeyword_set.all():
             print(f'> vacancy {v} skipped. google kwds not found')
             continue
@@ -191,7 +181,9 @@ if __name__ == '__main__':
                                                ad_group_id=ad_group_id, target_url=page_url,
                                                headers=headers, descriptions=descriptions)
                 if rsa:
-                    print(f'>> rsa for [{v}] done (try {count + 1}/3): {rsa}')
+                    msg = f'>> rsa for [{v}] done (try {count + 1}/3): {rsa}'
+                    result.append(msg)
+                    print(msg)
                     break
                 # print(f'>>> create rsa error for [{v}]. headers: {headers}, descriptions: {descriptions}')
                 if count == 2:
@@ -199,4 +191,58 @@ if __name__ == '__main__':
         except Exception as ex:
             with open('skipped_vacancies_ids.txt', 'a') as file:
                 file.write(f'{v.id} -> {v}: {str(ex)}\n')
-    print('Done!')
+    return result
+
+
+# if __name__ == '__main__':
+#     import os
+#     import django
+#     from dotenv import load_dotenv
+#     load_dotenv()
+#     AZURE_OPENAI_API_KEY = os.environ.get('AZURE_OPENAI_API_KEY')
+#     os.environ["DJANGO_SETTINGS_MODULE"] = 'config.settings'
+#     django.setup()
+#     from buxonline.models import Vacancy, Language
+#     main_customer_id = '8620481282'
+#     main_campaign_id = '20532856715'
+#     google_api_client = make_client()
+#     lang = Language.objects.filter(name='Italian').first()
+#     vacancies = Vacancy.objects.filter(language=lang).order_by('pk')
+#     for v in vacancies:
+#         # if v.id <= 111:
+#         #     continue
+#         if not v.vacancygooglekeyword_set.all():
+#             print(f'> vacancy {v} skipped. google kwds not found')
+#             continue
+#         try:
+#             page_url = f'https://buxonline.org/vacancy/{v.id}/{v.language.code_a2}'
+#             # step 1: add ad_group
+#             ad_group_id = add_ad_group(google_api_client, main_customer_id, main_campaign_id, v.title[:60])
+#             # step 2 add keywords to ad_group
+#             keywords = v.vacancygooglekeyword_set.all().order_by('pk')[:25]
+#             skipped_kws = 0
+#             for keyword in keywords:
+#                 kw = add_keyword(client=google_api_client, customer_id=main_customer_id,
+#                                  ad_group_id=ad_group_id, keyword_text=keyword.text)
+#                 if not kw:
+#                     skipped_kws += 1
+#                     print(f'>>> keyword [{keyword}] skipped!')
+#                 time.sleep(3)
+#             print(f'> kwds for [{v}] added to group: {ad_group_id} ({len(keywords) - skipped_kws} of {len(keywords)})')
+#             # step 3: add responsive search_ad
+#             headers = [h.text for h in v.vacancyheader_set.all()]
+#             descriptions = [d.text for d in v.vacancydescription_set.all()]
+#             for count in range(3):
+#                 rsa = add_responsive_search_ad(client=google_api_client, customer_id=main_customer_id,
+#                                                ad_group_id=ad_group_id, target_url=page_url,
+#                                                headers=headers, descriptions=descriptions)
+#                 if rsa:
+#                     print(f'>> rsa for [{v}] done (try {count + 1}/3): {rsa}')
+#                     break
+#                 # print(f'>>> create rsa error for [{v}]. headers: {headers}, descriptions: {descriptions}')
+#                 if count == 2:
+#                     raise Exception(f'>>> create rsa error: [3] times gone for [{v}]')
+#         except Exception as ex:
+#             with open('skipped_vacancies_ids.txt', 'a') as file:
+#                 file.write(f'{v.id} -> {v}: {str(ex)}\n')
+#     print('Done!')

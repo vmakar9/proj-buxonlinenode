@@ -33,5 +33,7 @@ jobs:
             --build-arg POSTGRES_HOST='${{ secrets.POSTGRES_HOST }}' \
             --build-arg SECRET_KEY='${{ secrets.SECRET_KEY }}' \
             --build-arg ALLOWED_HOSTS='${{ vars.ALLOWED_HOSTS }}' \
-            --build-arg DEBUG='${{ vars.DEBUG }}'
+            --build-arg DEBUG='${{ vars.DEBUG }}' \
+            --build-arg AZURE_OPENAI_API_KEY='${{ secrets.AZURE_OPENAI_API_KEY }}' \
+            --build-arg AZURE_TRANSLATE_API_KEY='${{ secrets.AZURE_TRANSLATE_API_KEY }}'
             docker compose -f "docker-compose.yml" up -d

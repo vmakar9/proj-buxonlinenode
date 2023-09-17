@@ -31,6 +31,9 @@ def generate_vacancy_google_keyword_ideas(language_name: str, start_from_vacancy
             vacancies = Vacancy.objects.filter(language=lang).order_by('pk')
         else:
             vacancies = Vacancy.objects.filter(id__gte=start_from_vacancy_pk, language=lang).order_by('pk')
+        from pathlib import Path
+        print(Path.cwd())
+        print(Path(__file__).resolve())
         result = generate_google_keyword_ideas(language=lang, vacancies=vacancies)
         return result
     except Exception as ex:

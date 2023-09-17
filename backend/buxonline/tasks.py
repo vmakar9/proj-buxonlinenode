@@ -37,7 +37,7 @@ def generate_vacancy_google_keyword_ideas(language_name: str, start_from_vacancy
         result = generate_google_keyword_ideas(language=lang, vacancies=vacancies)
         return result
     except Exception as ex:
-        msg = f'> generate_vacancy_seo_data task Exception: {ex}'
+        msg = f'> generate_vacancy_google_keyword_ideas task Exception: {ex}'
         print(msg)
         return msg
 
@@ -55,6 +55,6 @@ def generate_vacancy_google_ads(
         result = generate_google_ads(main_campaign_id=main_campaign_id, vacancies=vacancies)
         return result
     except Exception as ex:
-        msg = f'> generate_vacancy_seo_data task Exception: {ex}'
+        msg = f'> generate_vacancy_google_ads task Exception: {ex}'
         print(msg)
         return msg

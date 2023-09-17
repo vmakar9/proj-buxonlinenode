@@ -1,6 +1,7 @@
 import sys
 import time
 import uuid
+from pathlib import Path
 from typing import List
 from google.ads.googleads.client import GoogleAdsClient
 from google.ads.googleads.errors import GoogleAdsException
@@ -224,9 +225,10 @@ def generate_google_keywords_for_vacancies(client, customer_id, vacancies, locat
         return result
 
 
-def generate_google_keyword_ideas(language: Language, vacancies: List[Vacancy]):  # ToDo google-ads.yaml !
+def generate_google_keyword_ideas(language: Language, vacancies: List[Vacancy]):
     customer_id = '8620481282'  # ASSOCIATION OF ASSISTANCE TO THE...
-    google_client = make_client()
+    keys_path = Path.cwd() / 'buxonline' / 'fixtures' / 'google_ads_api' / 'google-ads.yaml'
+    google_client = make_client(path=keys_path.__str__())
     google_loc_ids = [i.google_location_id for i in language.country_set.all() if i.google_location_id]
     res = generate_google_keywords_for_vacancies(client=google_client, customer_id=customer_id, vacancies=vacancies,
                                                  location_ids=google_loc_ids, language_id=language.google_lang_id)

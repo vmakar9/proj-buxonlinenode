@@ -2,6 +2,7 @@ import sys
 import time
 import uuid
 from typing import List
+from pathlib import Path
 from google.ads.googleads.client import GoogleAdsClient
 from google.ads.googleads.errors import GoogleAdsException
 from buxonline.models import Vacancy
@@ -152,7 +153,8 @@ def add_responsive_search_ad(client, customer_id, ad_group_id, target_url: str, 
 
 def generate_google_ads(main_campaign_id: str, vacancies: List[Vacancy]):
     main_customer_id = '8620481282'
-    google_api_client = make_client()
+    keys_path = Path.cwd() / 'buxonline' / 'fixtures' / 'google_ads_api' / 'google-ads.yaml'
+    google_api_client = make_client(path=keys_path.__str__())
     result = []
     for v in vacancies:
         if not v.vacancygooglekeyword_set.all():

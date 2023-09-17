@@ -209,10 +209,12 @@ def generate_google_keywords_for_vacancies(client, customer_id, vacancies, locat
     result = []
     for count, vacancy in enumerate(vacancies):
         raw_keywords = [kw.text for kw in vacancy.vacancyrawkeyword_set.all().order_by('pk')[:20]]
+        print('<<<<< raw_kwds:', raw_keywords[:8])
         if not raw_keywords or vacancy.vacancygooglekeyword_set.all().count() > 7:
             continue
         google_keywords = generate_keyword_ideas(client=client, customer_id=customer_id, keyword_texts=raw_keywords,
                                                  location_ids=location_ids, language_id=language_id)
+        print('<<<<< google_kwds:', google_keywords[:8])
         time.sleep(4)
         for kw in google_keywords[:30]:
             if len(kw[0]) <= 70:
@@ -223,6 +225,7 @@ def generate_google_keywords_for_vacancies(client, customer_id, vacancies, locat
         print(log)
         result.append(log)
         return result
+    # return result
 
 
 def generate_google_keyword_ideas(language: Language, vacancies: List[Vacancy]):

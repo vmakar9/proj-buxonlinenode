@@ -105,30 +105,34 @@ def clean_ai_answer(raw_data: str, target_element_len: int = None) -> list:
         answer = parsed_json.get('descriptions')
     else:
         answer = parsed_json
-    if type(answer) == dict:
-        answer = [value for value in answer.values()]
-    if type(answer) != list or len(answer) <= 2 or type(answer) == list and type(answer[0]) != str:
+    if isinstance(answer, dict):
+        answer = list(answer.values())
+    if not isinstance(answer, list) or len(answer) <= 2 or isinstance(answer, list) and isinstance(answer[0], str):
         # print(f'>> clean_ai_answer error: Type: {type(answer)}; Data: {answer}')
         return []
     if target_element_len:
-        len_filtered_answer = [element for element in answer if len(element) <= target_element_len]
+        len_filtered_answer = [element for element in answer if len(
+            element) <= target_element_len]
         return len_filtered_answer if len(len_filtered_answer) > 2 else []
     return answer
 
 
 def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> list:
     openai.api_type = "azure"
-    openai.api_base = 'https://bablo.openai.azure.com/'  # 'https://chat-gpt-4-usa.openai.azure.com/'
+    # 'https://chat-gpt-4-usa.openai.azure.com/'
+    openai.api_base = 'https://bablo.openai.azure.com/'
     openai.api_version = "2023-03-15-preview"  # 2023-05-15
     openai.api_key = api_key
     time.sleep(3)
     for i in range(20):
         try:
-            raw_answer = openai.ChatCompletion.create(engine='gpt-35', messages=prompt)  # "gpt-4-32k"
+            raw_answer = openai.ChatCompletion.create(
+                engine='gpt-35', messages=prompt)  # "gpt-4-32k"
             if i > 1:
                 print('> try #', i, 'waiting delay')
                 time.sleep(20)
-            answer = clean_ai_answer(raw_answer['choices'][0]['message']['content'], target_element_len)
+            answer = clean_ai_answer(
+                raw_answer['choices'][0]['message']['content'], target_element_len)
             if answer:
                 return answer
         except Exception as ex:
@@ -156,16 +160,22 @@ def generate_vacancy_seo_data(open_ai_api_key: str, vacancies: List[Vacancy]):
     for count, vacancy in enumerate(vacancies):
         # if vacancy.id <= 1816:
         #     continue
-        keywords_prompt = get_keywords_prompt(vacancy.language.name, vacancy.title, vacancy.text)
-        keywords = generate_ads_data(prompt=keywords_prompt, api_key=open_ai_api_key, target_element_len=40)
+        keywords_prompt = get_keywords_prompt(
+            vacancy.language.name, vacancy.title, vacancy.text)
+        keywords = generate_ads_data(
+            prompt=keywords_prompt, api_key=open_ai_api_key, target_element_len=40)
         for keyword in keywords[:15]:
             vacancy.vacancyrawkeyword_set.create(text=keyword[:40])
-        headers_prompt = get_headers_prompt(vacancy.language.name, vacancy.title, vacancy.text)
-        headers = generate_ads_data(prompt=headers_prompt, api_key=open_ai_api_key, target_element_len=30)
+        headers_prompt = get_headers_prompt(
+            vacancy.language.name, vacancy.title, vacancy.text)
+        headers = generate_ads_data(
+            prompt=headers_prompt, api_key=open_ai_api_key, target_element_len=30)
         for header in headers[:15]:
             vacancy.vacancyheader_set.create(text=header[:30])
-        descriptions_prompt = get_descriptions_prompt(vacancy.language.name, vacancy.title, vacancy.text)
-        descriptions = generate_ads_data(prompt=descriptions_prompt, api_key=open_ai_api_key, target_element_len=90)
+        descriptions_prompt = get_descriptions_prompt(
+            vacancy.language.name, vacancy.title, vacancy.text)
+        descriptions = generate_ads_data(
+            prompt=descriptions_prompt, api_key=open_ai_api_key, target_element_len=90)
         for desc in descriptions[:4]:
             vacancy.vacancydescription_set.create(text=desc[:90])
         log = f'> {count+1}/{vacancies.count()} done | kw: [{vacancy.vacancyrawkeyword_set.count()}]; hd: ' \

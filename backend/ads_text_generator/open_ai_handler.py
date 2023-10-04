@@ -410,7 +410,9 @@ def clean_ai_answer(raw_data: str, expected_data_type: str):
     return ''
 
 
-def generate_ai_answer(prompt, api_key: str, expected_data_type: str = 'html', print_raw_answer: bool = False):
+def generate_ai_answer(prompt, api_key: str,
+                       expected_data_type: str = 'html',
+                       print_raw_answer: bool = False):
     openai.api_type = "azure"
     openai.api_base = 'https://chat-gpt-4-usa.openai.azure.com/'
     openai.api_version = '2023-05-15'
@@ -418,16 +420,21 @@ def generate_ai_answer(prompt, api_key: str, expected_data_type: str = 'html', p
     time.sleep(1)
     for i in range(10):
         try:
-            raw_answer = openai.ChatCompletion.create(engine="gpt-4-32k", messages=prompt)
+            raw_answer = openai.ChatCompletion.create(engine="gpt-4-32k", messages=prompt, headers={
+                "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
+                "Helicone-OpenAI-Api-Base": openai.api_base,
+            })
             if i > 1:
                 print('> try #', i, 'waiting delay')
                 time.sleep(7)
                 if print_raw_answer:
                     pprint(raw_answer['choices'][0]['message']['content'])
-            answer = clean_ai_answer(raw_answer['choices'][0]['message']['content'], expected_data_type)
+            answer = clean_ai_answer(
+                raw_answer['choices'][0]['message']['content'], expected_data_type)
             if answer:
                 return answer
-            print(f">>> cant clean answer: {raw_answer['choices'][0]['message']['content'][:150]}")
+            print(
+                f">>> cant clean answer: {raw_answer['choices'][0]['message']['content'][:150]}")
         except Exception as ex:
             print(f'>>> generate_ai_answer error: {str(ex)}')
             continue
@@ -451,4 +458,3 @@ if __name__ == '__main__':
     #     ]
     # ai_answer = generate_ai_answer(prompt, AZURE_OPENAI_API_KEY, print_raw_answer=True, expected_data_type='json')
     # pprint(ai_answer)
-

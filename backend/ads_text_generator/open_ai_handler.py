@@ -1,3 +1,4 @@
+import os
 import time
 import openai
 import json
@@ -421,7 +422,10 @@ def generate_ai_answer(prompt, api_key: str,
     for i in range(10):
         try:
             raw_answer = openai.ChatCompletion.create(
-                engine="gpt-4-32k", messages=prompt)
+                engine="gpt-4-32k", messages=prompt, headers={
+                    "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
+                    "Helicone-OpenAI-Api-Base": openai.api_base,
+                })
             if i > 1:
                 print('> try #', i, 'waiting delay')
                 time.sleep(7)

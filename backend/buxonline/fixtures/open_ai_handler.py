@@ -106,9 +106,9 @@ def clean_ai_answer(raw_data: str, target_element_len: int = None) -> list:
         answer = parsed_json.get('descriptions')
     else:
         answer = parsed_json
-    if isinstance(answer, dict):
-        answer = list(answer.values())
-    if not isinstance(answer, list) or len(answer) <= 2 or isinstance(answer, list) and isinstance(answer[0], str):
+    if type(answer) == dict:
+        answer = [value for value in answer.values()]
+    if type(answer) != list or len(answer) <= 2 or type(answer) == list and type(answer[0]) != str:
         # print(f'>> clean_ai_answer error: Type: {type(answer)}; Data: {answer}')
         return []
     if target_element_len:
@@ -129,7 +129,10 @@ def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> l
     for i in range(20):
         try:
             raw_answer = openai.ChatCompletion.create(
-                engine='gpt-35', messages=prompt)  # "gpt-4-32k"
+                engine='gpt-35', messages=prompt, headers={
+                    "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
+                    "Helicone-OpenAI-Api-Base": openai.api_base,
+                })  # "gpt-4-32k"
 
             if i > 1:
                 print('> try #', i, 'waiting delay')

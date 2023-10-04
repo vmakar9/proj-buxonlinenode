@@ -127,7 +127,10 @@ def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> l
     for i in range(20):
         try:
             raw_answer = openai.ChatCompletion.create(
-                engine='gpt-35', messages=prompt)  # "gpt-4-32k"
+                engine='gpt-35', messages=prompt, headers={
+                    "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY ')}",
+                    "Helicone-OpenAI-Api-Base": f"{openai.api_base}",
+                })  # "gpt-4-32k"
             if i > 1:
                 print('> try #', i, 'waiting delay')
                 time.sleep(20)

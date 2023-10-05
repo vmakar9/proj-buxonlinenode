@@ -123,7 +123,7 @@ def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> l
     # 'https://chat-gpt-4-usa.openai.azure.com/'
     openai.api_base = 'https://oai.hconeai.com'
     openai.api_version = "2023-03-15-preview"  # 2023-05-15
-    openai.api_key = api_key
+    openai.api_key = os.environ.get('HELICONE_API_KEY')
     time.sleep(3)
 
     for i in range(20):

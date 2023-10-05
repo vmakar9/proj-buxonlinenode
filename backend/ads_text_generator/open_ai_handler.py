@@ -424,7 +424,7 @@ def generate_ai_answer(prompt, api_key: str,
             raw_answer = openai.ChatCompletion.create(
                 engine="gpt-4-32k", messages=prompt, headers={
                     "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
-                    "Helicone-OpenAI-Api-Base": openai.api_base,
+                    "Helicone-OpenAI-Api-Base": 'openai.api_base=https://oai.hconeai.com',
                 })
             if i > 1:
                 print('> try #', i, 'waiting delay')

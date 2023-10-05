@@ -131,7 +131,7 @@ def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> l
             raw_answer = openai.ChatCompletion.create(
                 engine='gpt-35', messages=prompt, headers={
                     "Helicone-Auth": f"{os.environ.get('HELICONE_API_KEY')}",
-                    "Helicone-OpenAI-Api-Base": 'https://oai.hconeai.com',
+                    "Helicone-OpenAI-Api-Base": 'https://bablo.openai.azure.com',
                 })  # "gpt-4-32k"
 
             if i > 1:

@@ -415,7 +415,7 @@ def generate_ai_answer(prompt, api_key: str,
                        expected_data_type: str = 'html',
                        print_raw_answer: bool = False):
     openai.api_type = "azure"
-    openai.api_base = 'https://chat-gpt-4-usa.openai.azure.com/'
+    openai.api_base = 'https://oai.hconeai.com'
     openai.api_version = '2023-05-15'
     openai.api_key = api_key
     time.sleep(1)
@@ -424,7 +424,7 @@ def generate_ai_answer(prompt, api_key: str,
             raw_answer = openai.ChatCompletion.create(
                 engine="gpt-4-32k", messages=prompt, headers={
                     "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
-                    "Helicone-OpenAI-Api-Base": 'openai.api_base=https://oai.hconeai.com',
+                    "Helicone-OpenAI-Api-Base": 'https://chat-gpt-4-usa.openai.azure.com/',
                 })
             if i > 1:
                 print('> try #', i, 'waiting delay')

@@ -107,7 +107,7 @@ def create_ad_text_asset(client, text, pinned_field=None):
 def _collect_headlines(client, headers: list, descriptions: list) -> tuple:
     served_asset_enum = client.enums.ServedAssetFieldTypeEnum.HEADLINE_1
     pinned_headline = create_ad_text_asset(
-        client, f"{headers[0][:24]} #{str(uuid.uuid4())[:4]}", served_asset_enum
+        client, f"{headers[0][:24]}", served_asset_enum
     )
     api_headers = [create_ad_text_asset(client, header[:30]) for header in headers[1:]]
     api_headers.insert(0, pinned_headline)

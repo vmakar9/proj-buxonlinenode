@@ -132,7 +132,7 @@ SPECTACULAR_SETTINGS = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "AUTH_HEADER_TYPES": ("Bearer", ),
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 # Celery Configuration Options
@@ -147,3 +147,5 @@ CELERY_RESULT_BACKEND = "redis://" + REDIS_HOST + ":" + REDIS_PORT + "/0"
 
 AZURE_OPENAI_API_KEY = os.environ.get('AZURE_OPENAI_API_KEY')
 AZURE_TRANSLATE_API_KEY = os.environ.get('AZURE_TRANSLATE_API_KEY')
+
+OPENAI_KEY = os.environ.get('OPENAI_KEY')

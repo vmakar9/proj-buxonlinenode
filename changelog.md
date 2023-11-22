@@ -1,5 +1,8 @@
 # Buxonline backend changelog
 
+## 1.0.2
+- Changed Helicone token
+
 ## 1.0.1
 
 - Change _collect_headlines function. Remove #uuid from field

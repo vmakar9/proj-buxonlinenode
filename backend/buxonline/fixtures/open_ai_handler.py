@@ -121,7 +121,7 @@ def clean_ai_answer(raw_data: str, target_element_len: int = None) -> list:
 def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> list:
     # openai.api_type = "azure"
     # 'https://chat-gpt-4-usa.openai.azure.com/'
-    openai.api_base = 'https://oai.hconeai.com/'
+    openai.api_base = 'https://oai.hconeai.com/v1/'
     # openai.api_version = "2023-03-15-preview"  # 2023-05-15
     openai.api_key = api_key
     time.sleep(3)

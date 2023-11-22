@@ -121,7 +121,7 @@ def clean_ai_answer(raw_data: str, target_element_len: int = None) -> list:
 def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> list:
     # openai.api_type = "azure"
     # 'https://chat-gpt-4-usa.openai.azure.com/'
-    openai.api_base = "https://oai.hconeai.com/"
+    # openai.api_base = "https://oai.hconeai.com/"
     # openai.api_version = "2023-03-15-preview"  # 2023-05-15
     # openai.api_version = "2023-05-15"
     openai.api_key = api_key
@@ -130,8 +130,8 @@ def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> l
     for i in range(20):
         try:
             raw_answer = openai.ChatCompletion.create(
-                engine='gpt-4', messages=prompt, headers={
-                    "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
+                engine='gpt-3.5-turbo', messages=prompt, headers={
+                    # "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
                     # "Helicone-OpenAI-Api-Base": 'https://bablo.openai.azure.com/',
                 })  # "gpt-4-32k"
 

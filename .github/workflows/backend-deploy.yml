@@ -36,5 +36,6 @@ jobs:
             --build-arg DEBUG='${{ vars.DEBUG }}' \
             --build-arg HELICONE_API_KEY='${{ secrets.HELICONE_API_KEY }}' \
             --build-arg AZURE_OPENAI_API_KEY='${{ secrets.AZURE_OPENAI_API_KEY }}' \
+            --build-arg OPENAI_KEY='${{ secrets.OPENAI_KEY }}' \
             --build-arg AZURE_TRANSLATE_API_KEY='${{ secrets.AZURE_TRANSLATE_API_KEY }}'
             docker compose -f "docker-compose.yml" up -d

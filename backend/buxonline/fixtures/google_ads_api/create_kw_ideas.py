@@ -224,8 +224,8 @@ def generate_google_keywords_for_vacancies(client, customer_id, vacancies, locat
         log = f'>> {count + 1}/{vacancies.count()} done. Added {len(google_keywords)} google kwds --> {vacancy}'
         print(log)
         result.append(log)
-        return result
-    # return result
+
+    return result
 
 
 def generate_google_keyword_ideas(language: Language, vacancies: List[Vacancy]):

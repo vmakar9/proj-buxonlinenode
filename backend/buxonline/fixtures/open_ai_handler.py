@@ -183,6 +183,7 @@ def generate_vacancy_seo_data(open_ai_api_key: str, vacancies: List[Vacancy]):
     for count, vacancy in enumerate(vacancies):
         # if vacancy.id <= 1816:
         #     continue
+        time.sleep(5)
         keywords_prompt = get_keywords_prompt(
             vacancy.language.name, vacancy.title, vacancy.text)
         keywords = generate_ads_data(

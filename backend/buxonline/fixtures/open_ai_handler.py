@@ -2,21 +2,21 @@ import os
 import json
 from typing import List
 import time
-import openai
+from openai import OpenAI
 from buxonline.models import Vacancy
-
 
 if __name__ == '__main__':
     import os
     import django
     from dotenv import load_dotenv
+
     load_dotenv()
     os.environ["DJANGO_SETTINGS_MODULE"] = 'config.settings'
     django.setup()
 
 
 def get_keywords_prompt(page_lang: str, page_title: str, page_description: str):
-    json_format = "[\n    \"{keyword}\",\n    \"{keyword}\",\n    \"{keyword}\"\n]"
+    json_format = "\"keywords\": [\n    \"{keyword}\",\n    \"{keyword}\",\n    \"{keyword}\"\n]"
     prompt = [
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": f"I am using google ads to promote vacancies on my job list site. I want you to "
@@ -38,7 +38,7 @@ def get_keywords_prompt(page_lang: str, page_title: str, page_description: str):
 
 
 def get_headers_prompt(page_lang: str, page_title: str, page_description: str):
-    json_format = "[\n    \"{header}\",\n    \"{header}\",\n    \"{header}\"\n]"
+    json_format = "\"headers\": [\n    \"{header}\",\n    \"{header}\",\n    \"{header}\"\n]"
     prompt = [
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "I am using google ads to promote vacancies on my job list site. I want you to "
@@ -60,7 +60,8 @@ def get_headers_prompt(page_lang: str, page_title: str, page_description: str):
 
 
 def get_descriptions_prompt(page_lang: str, page_title: str, page_description: str):
-    json_format = "[\n    \"{description}\",\n    \"{description}\",\n    \"{description}\",\n    \"{description}\"\n]"
+    json_format = ("\"descriptions\": [\n    \"{description}\",\n    \"{description}\",\n    \"{description}\","
+                   "\n    \"{description}\"\n]")
     prompt = [
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "I am using google ads to promote vacancies on my job list site. I want you to "
@@ -81,23 +82,31 @@ def get_descriptions_prompt(page_lang: str, page_title: str, page_description: s
 
 
 def clean_ai_answer(raw_data: str, target_element_len: int = None) -> list:
-    start_index = raw_data.find('{')
-    if start_index != -1:
-        end_index = raw_data.rfind('}') + 1
-        json_data = raw_data[start_index:end_index]
-        # print('>>> clean_ai_answer {}', json_data)
-    else:
-        start_index = raw_data.find('[')
-        end_index = raw_data.rfind(']') + 1
-        json_data = raw_data[start_index:end_index]
-        # print('>>> clean_ai_answer []', json_data)
     try:
-        parsed_json = json.loads(json_data)
+        parsed_json = json.loads(raw_data)
     except Exception as ex:
-        # print('>> clean_ai_answer error (raw_data):', raw_data)
-        # print('>> clean_ai_answer error (json_data):', json_data)
-        print('>> clean_ai_answer error:', str(ex))
-        return []
+        print(ex)
+        parsed_json = None
+
+    if not parsed_json:
+        start_index = raw_data.find('{')
+        if start_index != -1:
+            end_index = raw_data.rfind('}') + 1
+            json_data = raw_data[start_index:end_index]
+            # print('>>> clean_ai_answer {}', json_data)
+        else:
+            start_index = raw_data.find('[')
+            end_index = raw_data.rfind(']') + 1
+            json_data = raw_data[start_index:end_index]
+            # print('>>> clean_ai_answer []', json_data)
+        try:
+            parsed_json = json.loads(json_data)
+        except Exception as ex:
+            # print('>> clean_ai_answer error (raw_data):', raw_data)
+            # print('>> clean_ai_answer error (json_data):', json_data)
+            print('>> clean_ai_answer error:', str(ex))
+            return []
+
     if 'keywords' in parsed_json:
         answer = parsed_json.get('keywords')
     elif 'headers' in parsed_json:
@@ -106,34 +115,39 @@ def clean_ai_answer(raw_data: str, target_element_len: int = None) -> list:
         answer = parsed_json.get('descriptions')
     else:
         answer = parsed_json
+
     if type(answer) == dict:
         answer = [value for value in answer.values()]
     if type(answer) != list or len(answer) <= 2 or type(answer) == list and type(answer[0]) != str:
         # print(f'>> clean_ai_answer error: Type: {type(answer)}; Data: {answer}')
         return []
+
     if target_element_len:
-        len_filtered_answer = [element for element in answer if len(
-            element) <= target_element_len]
+        len_filtered_answer = [element for element in answer if len(element) <= target_element_len]
+
         return len_filtered_answer if len(len_filtered_answer) > 2 else []
+
     return answer
 
 
 def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> list:
-    # openai.api_type = "azure"
-    # 'https://chat-gpt-4-usa.openai.azure.com/'
-    openai.api_base = "https://oai.hconeai.com/v1"
-    # openai.api_version = "2023-03-15-preview"  # 2023-05-15
-    # openai.api_version = "2023-05-15"
-    openai.api_key = api_key
+    client = OpenAI(
+        api_key=api_key,
+        base_url="http://oai.hconeai.com/v1"
+    )
+
     time.sleep(3)
 
     for i in range(20):
         try:
-            raw_answer = openai.ChatCompletion.create(
-                model='gpt-3.5-turbo-16k', messages=prompt, headers={
+            raw_answer = client.chat.completions.create(
+                model='gpt-3.5-turbo-1106',
+                response_format={"type": "json_object"},
+                messages=prompt,
+                extra_headers={
                     "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
-                    # "Helicone-OpenAI-Api-Base": 'https://bablo.openai.azure.com/',
-                })  # "gpt-4-32k"
+                },
+            )
 
             if i > 1:
                 print('> try #', i, 'waiting delay')
@@ -185,7 +199,7 @@ def generate_vacancy_seo_data(open_ai_api_key: str, vacancies: List[Vacancy]):
             prompt=descriptions_prompt, api_key=open_ai_api_key, target_element_len=90)
         for desc in descriptions[:4]:
             vacancy.vacancydescription_set.create(text=desc[:90])
-        log = f'> {count+1}/{vacancies.count()} done | kw: [{vacancy.vacancyrawkeyword_set.count()}]; hd: ' \
+        log = f'> {count + 1}/{vacancies.count()} done | kw: [{vacancy.vacancyrawkeyword_set.count()}]; hd: ' \
               f'[{vacancy.vacancyheader_set.count()}]; ds: [{vacancy.vacancydescription_set.count()}] --> {vacancy}'
         print(log)
         result.append(log)

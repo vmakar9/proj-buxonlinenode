@@ -153,7 +153,7 @@ def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> l
                 print('> try #', i, 'waiting delay')
                 time.sleep(20)
             answer = clean_ai_answer(
-                raw_answer['choices'][0]['message']['content'], target_element_len)
+                raw_answer.choices[0].message.content, target_element_len)
             if answer:
                 return answer
         except Exception as ex:

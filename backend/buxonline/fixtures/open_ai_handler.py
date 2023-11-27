@@ -138,29 +138,18 @@ def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> l
         base_url="http://oai.hconeai.com/v1"
     )
 
-    time.sleep(3)
+    time.sleep(5)
 
     for i in range(20):
-        time.sleep(0.5)
-
         try:
-            try:
-                raw_answer = client.chat.completions.create(
-                    model='gpt-3.5-turbo-1106',
-                    response_format={"type": "json_object"},
-                    messages=prompt,
-                    extra_headers={
-                        "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
-                    },
-                )
-            except openai.APIError as e:
-                # Handle API error here, e.g. retry or log
-                print(f">>> OpenAI API returned an API Error: {e}")
-                pass
-            except openai.RateLimitError as e:
-                # Handle rate limit error (we recommend using exponential backoff)
-                print(f">>> OpenAI API request exceeded rate limit: {e}")
-                pass
+            raw_answer = client.chat.completions.create(
+                model='gpt-3.5-turbo-1106',
+                response_format={"type": "json_object"},
+                messages=prompt,
+                extra_headers={
+                    "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
+                },
+            )
 
             if i > 1:
                 print('> try #', i, 'waiting delay')

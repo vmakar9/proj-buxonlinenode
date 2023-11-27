@@ -2,6 +2,8 @@ import os
 import json
 from typing import List
 import time
+
+import openai
 from openai import OpenAI
 from buxonline.models import Vacancy
 
@@ -139,15 +141,26 @@ def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> l
     time.sleep(3)
 
     for i in range(20):
+        time.sleep(0.5)
+
         try:
-            raw_answer = client.chat.completions.create(
-                model='gpt-3.5-turbo-1106',
-                response_format={"type": "json_object"},
-                messages=prompt,
-                extra_headers={
-                    "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
-                },
-            )
+            try:
+                raw_answer = client.chat.completions.create(
+                    model='gpt-3.5-turbo-1106',
+                    response_format={"type": "json_object"},
+                    messages=prompt,
+                    extra_headers={
+                        "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
+                    },
+                )
+            except openai.APIError as e:
+                # Handle API error here, e.g. retry or log
+                print(f">>> OpenAI API returned an API Error: {e}")
+                pass
+            except openai.RateLimitError as e:
+                # Handle rate limit error (we recommend using exponential backoff)
+                print(f">>> OpenAI API request exceeded rate limit: {e}")
+                pass
 
             if i > 1:
                 print('> try #', i, 'waiting delay')

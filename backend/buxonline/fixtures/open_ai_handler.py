@@ -135,7 +135,10 @@ def clean_ai_answer(raw_data: str, target_element_len: int = None) -> list:
 def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> list:
     client = OpenAI(
         api_key=api_key,
-        base_url="http://oai.hconeai.com/v1"
+        base_url="http://oai.hconeai.com/v1",
+        default_headers={
+            "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}"
+        }
     )
 
     time.sleep(5)
@@ -145,10 +148,7 @@ def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> l
             raw_answer = client.chat.completions.create(
                 model='gpt-3.5-turbo-1106',
                 response_format={"type": "json_object"},
-                messages=prompt,
-                extra_headers={
-                    "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
-                },
+                messages=prompt
             )
 
             if i > 1:

@@ -84,30 +84,29 @@ def get_descriptions_prompt(page_lang: str, page_title: str, page_description: s
 
 
 def clean_ai_answer(raw_data: str, target_element_len: int = None) -> list:
-    try:
-        parsed_json = json.loads(raw_data)
-    except Exception as ex:
-        print(ex)
-        parsed_json = None
+    # try:
+    #     parsed_json = json.loads(raw_data)
+    # except Exception as ex:
+    #     print(ex)
+    #     parsed_json = None
 
-    if not parsed_json:
-        start_index = raw_data.find('{')
-        if start_index != -1:
-            end_index = raw_data.rfind('}') + 1
-            json_data = raw_data[start_index:end_index]
-            # print('>>> clean_ai_answer {}', json_data)
-        else:
-            start_index = raw_data.find('[')
-            end_index = raw_data.rfind(']') + 1
-            json_data = raw_data[start_index:end_index]
-            # print('>>> clean_ai_answer []', json_data)
-        try:
-            parsed_json = json.loads(json_data)
-        except Exception as ex:
-            # print('>> clean_ai_answer error (raw_data):', raw_data)
-            # print('>> clean_ai_answer error (json_data):', json_data)
-            print('>> clean_ai_answer error:', str(ex))
-            return []
+    start_index = raw_data.find('{')
+    if start_index != -1:
+        end_index = raw_data.rfind('}') + 1
+        json_data = raw_data[start_index:end_index]
+        # print('>>> clean_ai_answer {}', json_data)
+    else:
+        start_index = raw_data.find('[')
+        end_index = raw_data.rfind(']') + 1
+        json_data = raw_data[start_index:end_index]
+        # print('>>> clean_ai_answer []', json_data)
+    try:
+        parsed_json = json.loads(json_data)
+    except Exception as ex:
+        # print('>> clean_ai_answer error (raw_data):', raw_data)
+        # print('>> clean_ai_answer error (json_data):', json_data)
+        print('>> clean_ai_answer error:', str(ex))
+        return []
 
     if 'keywords' in parsed_json:
         answer = parsed_json.get('keywords')
@@ -135,7 +134,7 @@ def clean_ai_answer(raw_data: str, target_element_len: int = None) -> list:
 def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> list:
     client = OpenAI(
         api_key=api_key,
-        base_url="http://oai.hconeai.com/v1",
+        base_url="https://oai.hconeai.com/v1",
         default_headers={
             "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}"
         }

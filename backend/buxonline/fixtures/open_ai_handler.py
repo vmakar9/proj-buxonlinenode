@@ -145,8 +145,8 @@ def generate_ads_data(prompt, api_key: str, target_element_len: int = None) -> l
     for i in range(20):
         try:
             raw_answer = client.chat.completions.create(
-                model='gpt-3.5-turbo-1106',
-                # response_format={"type": "json_object"},
+                model='gpt-4-1106-preview',
+                response_format={"type": "json_object"},
                 messages=prompt
             )
 

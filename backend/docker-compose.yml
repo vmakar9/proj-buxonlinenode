@@ -68,7 +68,7 @@ services:
     image: "mher/flower"
     restart: always
     container_name: flower
-    command: celery flower --url_prefix=/flower --basic_auth=${FLOWER_LOGIN}:${FLOWER_PWD}
+    command: celery flower --basic_auth=${FLOWER_LOGIN}:${FLOWER_PWD}
     environment:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0

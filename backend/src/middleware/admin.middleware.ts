@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../erorr/api.error";
 import { Admin } from "../models/admin.model";
 import { IAdmin } from "../types/admin.type";
+import { IAdminTokenPayload } from "../types/token.type";
 
 class AdminMiddleware {
   public getDynamicallyAndThrow(
@@ -47,6 +48,21 @@ class AdminMiddleware {
         next(e);
       }
     };
+  }
+  public async isAdminValid(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { _id } = req.res.locals.jwtPayload as IAdminTokenPayload;
+
+      const admin = await Admin.findById(_id);
+
+      if (admin.status != "verified") {
+        throw new ApiError("Your account not verified or blocked", 403);
+      }
+      res.locals.admin = admin;
+      next();
+    } catch (e) {
+      next(e);
+    }
   }
 }
 

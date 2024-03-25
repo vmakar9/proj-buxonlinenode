@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../erorr/api.error";
 import { Company } from "../models/company.model";
 import { ICompany } from "../types/company.type";
+import { ICompanyTokenPayload } from "../types/token.type";
 
 class CompanyMiddleware {
   public getDynamicallyAndThrow(
@@ -47,6 +48,22 @@ class CompanyMiddleware {
         next(e);
       }
     };
+  }
+
+  public async isCompanyValid(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { _id } = req.res.locals.jwtPayload as ICompanyTokenPayload;
+
+      const company = await Company.findById(_id);
+
+      if (company.status != "verified") {
+        throw new ApiError("Your account not verified or blocked", 403);
+      }
+      res.locals.company = company;
+      next();
+    } catch (e) {
+      next(e);
+    }
   }
 }
 

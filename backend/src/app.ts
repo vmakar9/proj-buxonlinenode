@@ -7,6 +7,7 @@ import { adminRouter } from "./routers/admin.router";
 import { authRouter } from "./routers/auth.router";
 import { candidateRouter } from "./routers/candidate.router";
 import { companyRouter } from "./routers/company.router";
+import { feedbackonvacancyRouter } from "./routers/feedbackonvacancy.router";
 import { hrRouter } from "./routers/hr.router";
 import { vacancyRouter } from "./routers/vacany.router";
 
@@ -22,6 +23,7 @@ app.use("/hr", hrRouter);
 app.use("/company", companyRouter);
 app.use("/admin", adminRouter);
 app.use("/vacancy", vacancyRouter);
+app.use("/vacancy-feedback", feedbackonvacancyRouter);
 app.listen(configs.PORT, async () => {
   await mongoose.connect(configs.DB_URL);
 

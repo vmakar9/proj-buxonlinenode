@@ -10,7 +10,7 @@ class CandidateController {
     try {
       const jwtPayload = req.res.locals.jwtPayload as ICandidateTokenPayload;
       const candidate = await candidateService.getMe(jwtPayload);
-      res.json({ data: candidate });
+      res.json(candidate);
     } catch (e) {
       next(e);
     }

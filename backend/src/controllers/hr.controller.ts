@@ -10,7 +10,7 @@ class HrController {
     try {
       const jwtPayload = req.res.locals.jwtPayload as IHRTokenPayload;
       const hr = await hrService.getMe(jwtPayload);
-      res.json({ data: hr });
+      res.json(hr);
     } catch (e) {
       next(e);
     }

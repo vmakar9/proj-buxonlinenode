@@ -10,7 +10,7 @@ class CompanyController {
     try {
       const jwtPayload = req.res.locals.jwtPayload as ICompanyTokenPayload;
       const company = await companyService.getMyCompany(jwtPayload);
-      res.json({ data: company });
+      res.json(company);
     } catch (e) {
       next(e);
     }

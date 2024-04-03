@@ -2,6 +2,7 @@ import { model, Schema, Types } from "mongoose";
 
 import { EEnglishLevel } from "../enum/english-level.enum";
 import { ENatureOfWork } from "../enum/nature-of-work.enum";
+import { ESeniority } from "../enum/seniority.enum";
 import { ETypeJob } from "../enum/type-job.enum";
 import { Company } from "./company.model";
 
@@ -13,6 +14,11 @@ const vacancySchema = new Schema(
     },
     salary: {
       type: String,
+      required: true,
+    },
+    seniority: {
+      type: String,
+      enum: ESeniority,
       required: true,
     },
     type_job: {

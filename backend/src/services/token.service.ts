@@ -26,60 +26,72 @@ class TokenService {
   public generateCandidateToken(
     payload: ICandidateTokenPayload,
   ): ICandidateTokenPair {
-    const accessCandidateToken = jwt.sign(
-      payload,
-      configs.JWT_CANDIDATE_ACCESS_SECRET,
-      {
-        expiresIn: "1h",
-      },
-    );
-    const refreshCandidateToken = jwt.sign(
-      payload,
-      configs.JWT_CANDIDATE_REFRESH_SECRET,
-      {
-        expiresIn: "30h",
-      },
-    );
-    return {
-      accessCandidateToken,
-      refreshCandidateToken,
-    };
+    try {
+      const accessCandidateToken = jwt.sign(
+        payload,
+        configs.JWT_CANDIDATE_ACCESS_SECRET,
+        {
+          expiresIn: "1h",
+        },
+      );
+      const refreshCandidateToken = jwt.sign(
+        payload,
+        configs.JWT_CANDIDATE_REFRESH_SECRET,
+        {
+          expiresIn: "30h",
+        },
+      );
+      return {
+        accessCandidateToken,
+        refreshCandidateToken,
+      };
+    } catch (e) {
+      throw new ApiError("Error generate Token", 400);
+    }
   }
 
   public generateHRToken(payload: IHRTokenPayload): IHRTokenPair {
-    const accessHRToken = jwt.sign(payload, configs.JWT_HR_ACCESS_SECRET, {
-      expiresIn: "1h",
-    });
-    const refreshHRToken = jwt.sign(payload, configs.JWT_HR_REFRESH_SECRET, {
-      expiresIn: "30h",
-    });
-    return {
-      accessHRToken,
-      refreshHRToken,
-    };
+    try {
+      const accessHRToken = jwt.sign(payload, configs.JWT_HR_ACCESS_SECRET, {
+        expiresIn: "1h",
+      });
+      const refreshHRToken = jwt.sign(payload, configs.JWT_HR_REFRESH_SECRET, {
+        expiresIn: "30h",
+      });
+      return {
+        accessHRToken,
+        refreshHRToken,
+      };
+    } catch (e) {
+      throw new ApiError("Error generate Token", 400);
+    }
   }
 
   public generateCompanyToken(
     payload: ICompanyTokenPayload,
   ): ICompanyTokenPair {
-    const accessCompanyToken = jwt.sign(
-      payload,
-      configs.JWT_COMPANY_ACCESS_SECRET,
-      {
-        expiresIn: "1h",
-      },
-    );
-    const refreshCompanyToken = jwt.sign(
-      payload,
-      configs.JWT_COMPANY_REFRESH_SECRET,
-      {
-        expiresIn: "30h",
-      },
-    );
-    return {
-      accessCompanyToken,
-      refreshCompanyToken,
-    };
+    try {
+      const accessCompanyToken = jwt.sign(
+        payload,
+        configs.JWT_COMPANY_ACCESS_SECRET,
+        {
+          expiresIn: "1h",
+        },
+      );
+      const refreshCompanyToken = jwt.sign(
+        payload,
+        configs.JWT_COMPANY_REFRESH_SECRET,
+        {
+          expiresIn: "30h",
+        },
+      );
+      return {
+        accessCompanyToken,
+        refreshCompanyToken,
+      };
+    } catch (e) {
+      throw new ApiError("Error generate Token", 400);
+    }
   }
 
   public checkCandidateToken(
@@ -143,19 +155,23 @@ class TokenService {
     payload: ICandidateActionTokenPayload,
     tokenType: EActionTokenType,
   ) {
-    let secret = "";
-    switch (tokenType) {
-      case EActionTokenType.forgot:
-        secret = configs.JWT_CANDIDATE_FORGOT_SECRET;
-        break;
-      case EActionTokenType.verify:
-        secret = configs.JWT_CANDIDATE_VERIFY_SECRET;
-        break;
-    }
+    try {
+      let secret = "";
+      switch (tokenType) {
+        case EActionTokenType.forgot:
+          secret = configs.JWT_CANDIDATE_FORGOT_SECRET;
+          break;
+        case EActionTokenType.verify:
+          secret = configs.JWT_CANDIDATE_VERIFY_SECRET;
+          break;
+      }
 
-    return jwt.sign(payload, secret, {
-      expiresIn: "3d",
-    });
+      return jwt.sign(payload, secret, {
+        expiresIn: "3d",
+      });
+    } catch (e) {
+      throw new ApiError("Error generate Token", 400);
+    }
   }
 
   public checkCandidateActionToken(
@@ -185,19 +201,23 @@ class TokenService {
     payload: IHRActionTokenPayload,
     tokenType: EActionTokenType,
   ) {
-    let secret = "";
-    switch (tokenType) {
-      case EActionTokenType.forgot:
-        secret = configs.JWT_HR_FORGOT_SECRET;
-        break;
-      case EActionTokenType.verify:
-        secret = configs.JWT_HR_VERIFY_SECRET;
-        break;
-    }
+    try {
+      let secret = "";
+      switch (tokenType) {
+        case EActionTokenType.forgot:
+          secret = configs.JWT_HR_FORGOT_SECRET;
+          break;
+        case EActionTokenType.verify:
+          secret = configs.JWT_HR_VERIFY_SECRET;
+          break;
+      }
 
-    return jwt.sign(payload, secret, {
-      expiresIn: "3d",
-    });
+      return jwt.sign(payload, secret, {
+        expiresIn: "3d",
+      });
+    } catch (e) {
+      throw new ApiError("Error generate Token", 400);
+    }
   }
 
   public checkHRActionToken(actionHRToken: string, type: EActionTokenType) {
@@ -221,19 +241,23 @@ class TokenService {
     payload: ICompanyActionTokenPayload,
     tokenType: EActionTokenType,
   ) {
-    let secret = "";
-    switch (tokenType) {
-      case EActionTokenType.forgot:
-        secret = configs.JWT_COMPANY_FORGOT_SECRET;
-        break;
-      case EActionTokenType.verify:
-        secret = configs.JWT_COMPANY_VERIFY_SECRET;
-        break;
-    }
+    try {
+      let secret = "";
+      switch (tokenType) {
+        case EActionTokenType.forgot:
+          secret = configs.JWT_COMPANY_FORGOT_SECRET;
+          break;
+        case EActionTokenType.verify:
+          secret = configs.JWT_COMPANY_VERIFY_SECRET;
+          break;
+      }
 
-    return jwt.sign(payload, secret, {
-      expiresIn: "3d",
-    });
+      return jwt.sign(payload, secret, {
+        expiresIn: "3d",
+      });
+    } catch (e) {
+      throw new ApiError("Error generate Token", 400);
+    }
   }
 
   public checkCompanyActionToken(
@@ -260,24 +284,28 @@ class TokenService {
   }
 
   public generateAdminToken(payload: IAdminTokenPayload): IAdminTokenPair {
-    const accessAdminToken = jwt.sign(
-      payload,
-      configs.JWT_ADMIN_ACCESS_SECRET,
-      {
-        expiresIn: "1h",
-      },
-    );
-    const refreshAdminToken = jwt.sign(
-      payload,
-      configs.JWT_ADMIN_REFRESH_SECRET,
-      {
-        expiresIn: "30h",
-      },
-    );
-    return {
-      accessAdminToken,
-      refreshAdminToken,
-    };
+    try {
+      const accessAdminToken = jwt.sign(
+        payload,
+        configs.JWT_ADMIN_ACCESS_SECRET,
+        {
+          expiresIn: "1h",
+        },
+      );
+      const refreshAdminToken = jwt.sign(
+        payload,
+        configs.JWT_ADMIN_REFRESH_SECRET,
+        {
+          expiresIn: "30h",
+        },
+      );
+      return {
+        accessAdminToken,
+        refreshAdminToken,
+      };
+    } catch (e) {
+      throw new ApiError("Error generate Token", 400);
+    }
   }
 
   public checkAdminToken(
@@ -304,16 +332,20 @@ class TokenService {
     payload: IAdminActionTokenPayload,
     tokenType: EActionTokenType,
   ) {
-    let secret = "";
-    switch (tokenType) {
-      case EActionTokenType.forgot:
-        secret = configs.JWT_ADMIN_FORGOT_SECRET;
-        break;
-      case EActionTokenType.verify:
-        secret = configs.JWT_ADMIN_VERIFY_SECRET;
-        break;
+    try {
+      let secret = "";
+      switch (tokenType) {
+        case EActionTokenType.forgot:
+          secret = configs.JWT_ADMIN_FORGOT_SECRET;
+          break;
+        case EActionTokenType.verify:
+          secret = configs.JWT_ADMIN_VERIFY_SECRET;
+          break;
+      }
+      return jwt.sign(payload, secret, { expiresIn: "3d" });
+    } catch (e) {
+      throw new ApiError("Error generate Token", 400);
     }
-    return jwt.sign(payload, secret, { expiresIn: "3d" });
   }
 
   public checkAdminActionToken(token: string, tokeType: EActionTokenType) {

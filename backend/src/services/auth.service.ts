@@ -87,7 +87,7 @@ class AuthService {
         candidate.password,
       );
       if (!isMatched) {
-        throw new ApiError("Invalid email or password", 409);
+        throw new ApiError("Invalid email or password", 401);
       }
 
       const tokenPair = tokenService.generateCandidateToken({

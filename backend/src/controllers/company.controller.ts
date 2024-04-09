@@ -10,7 +10,7 @@ class CompanyController {
     try {
       const jwtPayload = req.res.locals.jwtPayload as ICompanyTokenPayload;
       const company = await companyService.getMyCompany(jwtPayload);
-      res.json(company);
+      res.status(200).json(company);
     } catch (e) {
       next(e);
     }
@@ -39,7 +39,7 @@ class CompanyController {
     try {
       const jwtPayload = req.res.locals.jwtPayload as ICompanyTokenPayload;
       await companyService.deleteMyCompany(jwtPayload);
-      res.sendStatus(204);
+      res.sendStatus(204).json("Your company successfully deleted ");
     } catch (e) {
       next(e);
     }

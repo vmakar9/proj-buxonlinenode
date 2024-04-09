@@ -10,7 +10,7 @@ class CandidateController {
     try {
       const jwtPayload = req.res.locals.jwtPayload as ICandidateTokenPayload;
       const candidate = await candidateService.getMe(jwtPayload);
-      res.json(candidate);
+      res.status(200).json(candidate);
     } catch (e) {
       next(e);
     }
@@ -33,7 +33,7 @@ class CandidateController {
       const jwtPayload = req.res.locals.jwtPayload as ICandidateTokenPayload;
       await candidateService.deleteMe(jwtPayload);
 
-      res.sendStatus(204);
+      res.sendStatus(204).json("Account is deleted");
     } catch (e) {
       next(e);
     }

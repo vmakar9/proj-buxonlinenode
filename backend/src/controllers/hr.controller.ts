@@ -10,7 +10,7 @@ class HrController {
     try {
       const jwtPayload = req.res.locals.jwtPayload as IHRTokenPayload;
       const hr = await hrService.getMe(jwtPayload);
-      res.json(hr);
+      res.status(200).json(hr);
     } catch (e) {
       next(e);
     }
@@ -32,7 +32,7 @@ class HrController {
     try {
       const jwtPayload = req.res.locals.jwtPayload as IHRTokenPayload;
       await hrService.deleteMe(jwtPayload);
-      res.sendStatus(204);
+      res.sendStatus(204).json("Account is deleted");
     } catch (e) {
       next(e);
     }

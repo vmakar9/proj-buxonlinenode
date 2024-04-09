@@ -9,7 +9,7 @@ class AdminController {
     try {
       const jwtPayload = req.res.locals.jwtPayload as IAdminTokenPayload;
       const admin = await adminService.getMe(jwtPayload);
-      res.json({ data: admin });
+      res.status(200).json(admin);
     } catch (e) {
       next(e);
     }
@@ -34,7 +34,7 @@ class AdminController {
 
       await adminService.deleteMe(jwtPayload);
 
-      res.sendStatus(204);
+      res.sendStatus(204).json("Account deleted");
     } catch (e) {
       next(e);
     }

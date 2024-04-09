@@ -10,7 +10,6 @@ import { s3Service } from "./s3.service";
 class HrService {
   public async getMe(jwtPayload: IHRTokenPayload): Promise<IHR> {
     const hr = await HR.findOne({ _id: jwtPayload._id });
-    console.log(jwtPayload._id);
     if (!hr) {
       throw new ApiError("You cannot have this hr", 403);
     }

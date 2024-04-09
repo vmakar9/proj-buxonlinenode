@@ -42,8 +42,17 @@ app.use("*", (err: ApiError, req: Request, res: Response) => {
     status: err?.status,
   });
 });
-app.listen(configs.PORT, async () => {
-  await mongoose.connect(configs.DB_URL);
+const startServer = async () => {
+  try {
+    await mongoose.connect(configs.DB_URL);
+    console.log("Connected to MongoDB");
 
-  console.log(`Server is running on ${configs.PORT} PORT`);
-});
+    app.listen(configs.PORT, () => {
+      console.log(`Server is running on port ${configs.PORT}`);
+    });
+  } catch (err) {
+    throw new ApiError(err.message, err.status);
+  }
+};
+
+startServer();

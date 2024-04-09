@@ -5,7 +5,10 @@ import { Vacancy } from "../models/vacancy.model";
 import { IVacancy } from "../types/vacancy.type";
 
 class VacancyService {
-  public async publishVacancy(data: IVacancy, companyId: string) {
+  public async publishVacancy(
+    data: IVacancy,
+    companyId: string,
+  ): Promise<void> {
     try {
       await Vacancy.create({
         ...data,

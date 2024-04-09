@@ -17,7 +17,7 @@ class AuthController {
   ) {
     try {
       await authService.candidateRegister(req.body);
-      res.sendStatus(201);
+      res.sendStatus(201).json("Candidate successfully registered");
     } catch (e) {
       next(e);
     }
@@ -40,7 +40,7 @@ class AuthController {
   public async hrRegister(req: Request, res: Response, next: NextFunction) {
     try {
       await authService.hrRegister(req.body);
-      res.sendStatus(201);
+      res.sendStatus(201).json("HR successfully registered");
     } catch (e) {
       next(e);
     }
@@ -64,7 +64,7 @@ class AuthController {
   ) {
     try {
       await authService.companyRegister(req.body);
-      res.sendStatus(201);
+      res.sendStatus(201).json("Company successfully registered");
     } catch (e) {
       next(e);
     }
@@ -131,7 +131,9 @@ class AuthController {
       const body = req.body as IChangePassword;
 
       await authService.changeCandidatePassword(body, jwtPayload);
-      return res.sendStatus(204);
+      return res
+        .sendStatus(204)
+        .json("Candidate password successfully changed");
     } catch (e) {
       next(e);
     }
@@ -147,7 +149,7 @@ class AuthController {
       const body = req.body as IChangePassword;
 
       await authService.changeHRPassword(body, jwtPayload);
-      return res.sendStatus(204);
+      return res.sendStatus(204).json("HR password successfully changed");
     } catch (e) {
       next(e);
     }
@@ -163,7 +165,7 @@ class AuthController {
       const body = req.body as IChangePassword;
 
       await authService.changeCompanyPassword(body, jwtPayload);
-      return res.sendStatus(204);
+      return res.sendStatus(204).json("Company password successfully changed");
     } catch (e) {
       next(e);
     }
@@ -179,7 +181,7 @@ class AuthController {
 
       await authService.forgotCandidatePassword(candidate);
 
-      return res.json("OK");
+      return res.sendStatus(200).json("Check your email");
     } catch (e) {
       next(e);
     }
@@ -196,7 +198,9 @@ class AuthController {
 
       await authService.setForgotCandidatePassword(newPassword, token);
 
-      return res.sendStatus(204);
+      return res
+        .sendStatus(204)
+        .json("Candidate password successfully changed");
     } catch (e) {
       next(e);
     }
@@ -212,7 +216,7 @@ class AuthController {
 
       await authService.forgotHRPassword(hr);
 
-      return res.json("OK");
+      return res.sendStatus(200).json("Check your email");
     } catch (e) {
       next(e);
     }
@@ -229,7 +233,7 @@ class AuthController {
 
       await authService.setForgotHRPassword(newPassword, token);
 
-      return res.sendStatus(204);
+      return res.sendStatus(204).json("HR password successfully changed");
     } catch (e) {
       next(e);
     }
@@ -245,7 +249,7 @@ class AuthController {
 
       await authService.forgotCompanyPassword(company);
 
-      return res.json("OK");
+      return res.sendStatus(204).json("Check your cooperative email");
     } catch (e) {
       next(e);
     }
@@ -262,7 +266,7 @@ class AuthController {
 
       await authService.setForgotCompanyPassword(newPassword, token);
 
-      return res.sendStatus(204);
+      return res.sendStatus(204).json("Company password successfully changed");
     } catch (e) {
       next(e);
     }
@@ -278,7 +282,7 @@ class AuthController {
 
       await authService.verifyCandidate(token);
 
-      return res.sendStatus(204);
+      return res.sendStatus(204).json("Candidate is verified");
     } catch (e) {
       next(e);
     }
@@ -290,7 +294,7 @@ class AuthController {
 
       await authService.verifyHR(token);
 
-      return res.sendStatus(204);
+      return res.sendStatus(204).json("HR is verified");
     } catch (e) {
       next(e);
     }
@@ -302,7 +306,7 @@ class AuthController {
 
       await authService.verifyCompany(token);
 
-      return res.sendStatus(204);
+      return res.sendStatus(204).json("Company is verified");
     } catch (e) {
       next(e);
     }
@@ -311,7 +315,7 @@ class AuthController {
   public async adminRegister(req: Request, res: Response, next: NextFunction) {
     try {
       await authService.adminRegister(req.body);
-      res.sendStatus(201);
+      res.sendStatus(201).json("Candidate successfully registered");
     } catch (e) {
       next(e);
     }
@@ -351,7 +355,7 @@ class AuthController {
       const body = req.body as IChangePassword;
 
       await authService.changeAdminPassword(body, jwtPayload);
-      return res.sendStatus(204);
+      return res.sendStatus(204).json("Admin password is successfully changed");
     } catch (e) {
       next(e);
     }
@@ -367,7 +371,7 @@ class AuthController {
 
       await authService.forgotAdminPassword(admin);
 
-      return res.json("OK");
+      return res.sendStatus(200).json("CheckYourEmail");
     } catch (e) {
       next(e);
     }
@@ -384,7 +388,7 @@ class AuthController {
 
       await authService.setForgotAdminPassword(newPassword, token);
 
-      return res.sendStatus(204);
+      return res.sendStatus(204).json("Admin password is successfully changed");
     } catch (e) {
       next(e);
     }
@@ -396,7 +400,7 @@ class AuthController {
 
       await authService.verifyAdmin(token);
 
-      return res.sendStatus(204);
+      return res.sendStatus(204).json("Admin is  verified");
     } catch (e) {
       next(e);
     }

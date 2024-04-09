@@ -9,7 +9,7 @@ class VacancyController {
     try {
       const { _id } = req.res.locals.jwtPayload as ICompanyTokenPayload;
       await vacancyService.publishVacancy(req.body, _id);
-      res.status(201).json("Created");
+      res.status(201).json("Vacancy is created");
     } catch (e) {
       next(e);
     }

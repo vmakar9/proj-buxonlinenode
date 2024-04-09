@@ -13,7 +13,9 @@ class FeedbackonvacancyController {
       const { _id } = req.res.locals.jwtPayload as ICandidateTokenPayload;
       const { vacancyId } = req.params;
       await feedbackonvacancyService.sendFeedBackOnVacancy(vacancyId, _id);
-      res.status(200).json("Feedback sent");
+      res
+        .status(200)
+        .json("Feedback sent. You can check status your feed in your profile");
     } catch (e) {
       next(e);
     }

@@ -516,7 +516,7 @@ class AuthService {
     }
   }
 
-  public async verifyCandidate(actionToken: string) {
+  public async verifyCandidate(actionToken: string): Promise<void> {
     try {
       const payload = tokenService.checkCandidateActionToken(
         actionToken,
@@ -537,7 +537,7 @@ class AuthService {
     }
   }
 
-  public async verifyHR(actionToken: string) {
+  public async verifyHR(actionToken: string): Promise<void> {
     try {
       const payload = tokenService.checkHRActionToken(
         actionToken,
@@ -558,7 +558,7 @@ class AuthService {
     }
   }
 
-  public async verifyCompany(actionToken: string) {
+  public async verifyCompany(actionToken: string): Promise<void> {
     try {
       const payload = tokenService.checkCompanyActionToken(
         actionToken,
@@ -735,7 +735,7 @@ class AuthService {
     }
   }
 
-  public async verifyAdmin(actionToken: string) {
+  public async verifyAdmin(actionToken: string): Promise<void> {
     try {
       const payload = tokenService.checkAdminActionToken(
         actionToken,

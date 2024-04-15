@@ -6,7 +6,7 @@ app.http("vacancies", {
   methods: ["GET"],
   authLevel: "anonymous",
   route: "vacancy",
-  handler: vacancyController.getAll.bind(vacancyController),
+  handler: vacancyController.getAll.bind(vacancyController.getAll),
 });
 
 app.http("vacancies", {

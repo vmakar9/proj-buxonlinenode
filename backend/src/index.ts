@@ -1,6 +1,6 @@
 import { app } from "@azure/functions";
 
-import { helloController } from "./controllers/hello.controller";
+import { hello } from "./controllers/hello.controller";
 import { vacancyController } from "./controllers/vacancy.controller";
 
 app.http("vacancies", {
@@ -21,5 +21,5 @@ app.http("hello", {
   methods: ["GET"],
   authLevel: "anonymous",
   route: "hello",
-  handler: helloController.hello.bind(helloController.hello),
+  handler: hello.bind(hello),
 });

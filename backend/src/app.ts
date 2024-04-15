@@ -11,6 +11,7 @@ import { authRouter } from "./routers/auth.router";
 import { candidateRouter } from "./routers/candidate.router";
 import { companyRouter } from "./routers/company.router";
 import { feedbackonvacancyRouter } from "./routers/feedbackonvacancy.router";
+import { helloRouter } from "./routers/hello.router";
 import { hrRouter } from "./routers/hr.router";
 import { vacancyRouter } from "./routers/vacany.router";
 
@@ -35,6 +36,7 @@ app.use("/company", companyRouter);
 app.use("/admin", adminRouter);
 app.use("/vacancy", vacancyRouter);
 app.use("/vacancy-feedback", feedbackonvacancyRouter);
+app.use("/hello", helloRouter);
 
 app.use("*", (err: ApiError, req: Request, res: Response) => {
   return res.status(err?.status || 500).json({

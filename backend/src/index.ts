@@ -21,5 +21,5 @@ app.http("hello", {
   methods: ["GET"],
   authLevel: "anonymous",
   route: "hello",
-  handler: hello.call,
+  handler: hello.bind,
 });

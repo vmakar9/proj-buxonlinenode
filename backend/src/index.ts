@@ -1,11 +1,7 @@
-import { app, HttpResponseInit } from "@azure/functions";
+import {app, HttpHandler} from "@azure/functions";
 
-
+import { helloController } from "./controllers/hello.controller";
 import { vacancyController } from "./controllers/vacancy.controller";
-
-export async function httpTrigger1(): Promise<HttpResponseInit> {
-  return { body: "Hello world" };
-}
 
 app.http("vacancies", {
   methods: ["GET"],
@@ -25,5 +21,5 @@ app.http("hello", {
   methods: ["GET"],
   authLevel: "anonymous",
   route: "hello",
-  handler: httpTrigger1,
+  handler: helloController.hello.bind(helloController) as HttpHandler,
 });

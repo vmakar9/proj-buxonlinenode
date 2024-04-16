@@ -2,7 +2,7 @@
   "name": "proj-buxonline",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "start": "rimraf dist && tsc-watch --onSuccess \"npm run watch\"",
     "watch": "nodemon \"src/app.ts\" --watch \"./src\""
